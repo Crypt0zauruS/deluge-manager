@@ -1,0 +1,62 @@
+.dropboxignore
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environnements virtuels
+venv/
+env/
+.env
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Fichiers de logs
+*.log
+
+# Fichiers de configuration locaux
+*.ini
+config.json
+
+# Fichiers système macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Fichiers système Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Fichiers IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Fichiers spécifiques à votre application
+DelugeManager.app
+DelugeManager.exe
+deluge_app_config.ini
+
+# Keyring / Fichiers de mot de passe
+*.keyring
