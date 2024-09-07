@@ -79,7 +79,8 @@ mv DelugeManager-v0.1.0-linux-ubuntu20.04-x64 DelugeManager
    - Nom d'utilisateur
    - Mot de passe
 3. Cliquez sur "Connexion".
-4. Une fois connecté, vous pouvez gérer vos torrents : ajouter, supprimer, mettre en pause, reprendre, etc.
+4. A la première connexion, votre système vous demandera si vous souhaitez enregistrer les informations de connexion en accédant à votre trousseau de clés (Keychain sur macOS, Gestionnaire de clés sur Linux, etc.). Pas d'inquiétude, cela sert à enregistrer votre mot de passe Deluge de manière sécurisée via la fonctionnalité de stockage sécurisé de votre système.
+5. Une fois connecté, vous pouvez gérer vos torrents : ajouter, supprimer, mettre en pause, reprendre, etc.
 
 ## Pour les développeurs
 
