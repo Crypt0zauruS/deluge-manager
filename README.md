@@ -4,7 +4,7 @@
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 <p align="center">
-  <img src="Screenshot.png" alt="Scrennshot DelugeManager" width="300"/>
+  <img src="Screenshot.png" alt="Scrennshot DelugeManager" width="400"/>
 </p>
 
 Deluge Torrent Manager est une application graphique pour gérer vos torrents via l'API Deluge. Elle offre une interface conviviale pour interagir avec votre serveur Deluge à distance.
@@ -42,19 +42,25 @@ Deluge Torrent Manager est une application graphique pour gérer vos torrents vi
 
 #### Windows
 
-1. Téléchargez le fichier `DelugeManager.exe` depuis la [page des releases](lien_vers_mes_releases).
+1. Téléchargez [ce fichier .exe](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.1.0/DelugeManager-v0.1.0-Windows-x64.exe).
 2. Double-cliquez sur `DelugeManager.exe` pour lancer l'application.
 
 #### macOS
 
-1. Téléchargez le fichier `DelugeManager.app` depuis la [page des releases](lien_vers_mes_releases).
-2. Déplacez `DelugeManager.app` dans votre dossier Applications.
+1. Téléchargez [ce fichier dmg](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.1.0/DelugeManager-v0.1.0-macOS-arm64.dmg) si vous êtes sur Mac Apple Silicon, ou [ce fichier dmg](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.1.0/DelugeManager-v0.1.0-macOS-x64.dmg) si vous êtes sur Mac Intel.
+2. Ouvrez le DMG puis déplacez `DelugeManager.app` dans votre dossier Applications.
 3. Double-cliquez sur `DelugeManager.app` pour lancer l'application.
 
 #### Linux
 
-1. Téléchargez le fichier `DelugeManager` depuis la [page des releases](lien_vers_mes_releases).
+1. Téléchargez [ce fichier exécutable](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.1.0/DelugeManager-v0.1.0-linux-ubuntu20.04-x64).
 2. Ouvrez un terminal et naviguez vers le dossier contenant le fichier téléchargé.
+3. Renommez le fichier exécutable :
+
+```bash
+mv DelugeManager-v0.1.0-linux-ubuntu20.04-x64 DelugeManager
+```
+
 3. Rendez le fichier exécutable : `chmod +x DelugeManager`
 4. Lancez l'application : `./DelugeManager`
 

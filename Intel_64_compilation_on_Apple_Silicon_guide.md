@@ -59,8 +59,10 @@ rm ~/miniconda3/miniconda.sh
 3. Créez un nouvel environnement Intel 64-bit dans le dossier du projet :
 
    ```bash
-   CONDA_SUBDIR=osx-64 conda create -p ./intel64_env python=3.11 # Remplacez 3.11 par la version de Python souhaitée
+   CONDA_SUBDIR=osx-64 conda create -p ./intel64_env python=3.11
    ```
+
+   Remplacez 3.11 par la version de Python souhaitée
 
 4. Activez l'environnement :
 
