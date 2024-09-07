@@ -12,16 +12,31 @@ Ce guide détaille le processus de création d'un environnement Conda Intel 64-b
 
 ## Installation de Miniconda
 
-Installez Miniconda en exécutant le script bash téléchargé :
+1. Installez Miniconda en exécutant le script bash téléchargé :
 
 ```bash
 mkdir -p ~/miniconda3
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o ~/miniconda3/miniconda.sh
 bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
 rm ~/miniconda3/miniconda.sh
-~/miniconda3/bin/conda init bash # et/ou zsh ~/miniconda3/bin/conda init zsh
-~/miniconda3/bin/conda init bash # et/ou zsh ~/miniconda3/bin/conda init zsh
-~/miniconda3/bin/conda config --set auto_activate_base false # Désactive l'activation automatique pour ne pas interférer si vous avez déjà installé python
+```
+
+2. Initialisez-le dans votre shell bash et/ou zsh :
+
+```bash
+~/miniconda3/bin/conda init bash
+```
+
+et/ou
+
+```bash
+~/miniconda3/bin/conda init zsh
+```
+
+3. Désactivez l'activation automatique pour ne pas interférer si vous avez déjà installé python
+
+```bash
+~/miniconda3/bin/conda config --set auto_activate_base false
 ```
 
 ## Configuration de l'environnement shell
@@ -36,10 +51,16 @@ rm ~/miniconda3/miniconda.sh
    Remplacez votre_nom_d_utilisateur par votre nom d'utilisateur
    Remplacez `YOUR_SHELL_NAME` par `bash` ou `zsh` selon votre shell.
 
-2. Rechargez votre fichier de configuration :
+2. Rechargez votre fichier de configuration selon le shell que vous avez initialisé et configuré:
 
    ```bash
-   source ~/.bash_profile  # et/ou source ~/.zshrc pour Zsh
+   source ~/.bash_profile
+   ```
+
+   et/ou
+
+   ```bash
+   source ~/.zshrc
    ```
 
 ## Création d'un environnement virtuel Conda Intel 64-bit dans le dossier du projet
@@ -86,20 +107,24 @@ rm ~/miniconda3/miniconda.sh
 
 ## Installation des dépendances
 
-Installez toutes les dépendances nécessaires dans l'environnement.
+1. Installez toutes les dépendances nécessaires dans l'environnement.
+
 Même si vous avez déjà installé les dépendances précédemment dans l'environnement principal, vous devrez les réinstaller dans l'environnement Intel 64-bit.
-Essayez d'abord avec conda, et si cela échoue, utilisez pip :
+
+Essayez d'abord avec conda (confa-forge est un canal supplémentaire pour ttkbootstrap):
 
 ```bash
-# Essayez d'abord avec conda
 conda install -y tk requests keyring pyinstaller
-conda install -y -c conda-forge ttkbootstrap #confa-forge est un canal supplémentaire pour ttkbootstrap
+conda install -y -c conda-forge ttkbootstrap
+```
 
-# Si certaines installations échouent avec conda, utilisez pip pour ces packages
+Si certaines installations échouent avec conda, utilisez pip pour ces packages:
+
+```bash
 pip install tk requests keyring pyinstaller ttkbootstrap
 ```
 
-Vérifiez que tout est correctement installé :
+2. Vérifiez que tout est correctement installé :
 
 ```bash
 python -c "import tkinter, requests, keyring, ttkbootstrap, PyInstaller; print('Tout est installé correctement!')"
