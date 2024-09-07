@@ -3,6 +3,10 @@
 [![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://semver.org)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
+<p align="center">
+  <img src="Screenshot.png" alt="Scrennshot DelugeManager" width="300"/>
+</p>
+
 Deluge Torrent Manager est une application graphique pour gérer vos torrents via l'API Deluge. Elle offre une interface conviviale pour interagir avec votre serveur Deluge à distance.
 
 ## Fonctionnalités clés
@@ -280,6 +284,8 @@ deactivate
 ```bash
 rm -rf venv
 ```
+
+3. Sous MacOS, vous pouvez générer un DMG personnalisé pour l'application en utilisant le script `create-dmg.sh`. Voir le fichier [DMG_creation_guide.md](DMG_creation_guide.md) pour plus de détails.
 
 ## Licence
 
