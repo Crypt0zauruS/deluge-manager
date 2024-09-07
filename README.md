@@ -9,6 +9,12 @@
 
 Deluge Torrent Manager est une application graphique pour gérer vos torrents via l'API Deluge. Elle offre une interface conviviale pour interagir avec votre serveur Deluge à distance.
 
+Deluge est un client BitTorrent multiplateforme et open-source. Il peut être utilisé en mode autonome ou en tant que service de démon.
+
+Mon application est conçue pour se connecter à un serveur Deluge distant via http ou https.
+
+Voir la [documentation de Deluge](https://deluge-torrent.org/about/)
+
 ## Fonctionnalités clés
 
 - Connexion à un serveur Deluge distant par http ou https
