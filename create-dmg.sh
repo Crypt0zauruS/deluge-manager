@@ -20,7 +20,7 @@ TEMP_DIR=$(mktemp -d)
 BACKGROUND_IMG="${TEMP_DIR}/background.png"
 
 # Redimensionnez l'image de fond pour qu'elle remplisse la fenêtre tout en préservant son ratio
-convert "${ORIGINAL_BACKGROUND}" -resize "${WINDOW_WIDTH}x${WINDOW_HEIGHT}^" -gravity center -extent ${WINDOW_WIDTH}x${WINDOW_HEIGHT} "${BACKGROUND_IMG}"
+magick "${ORIGINAL_BACKGROUND}" -resize "${WINDOW_WIDTH}x${WINDOW_HEIGHT}^" -gravity center -extent ${WINDOW_WIDTH}x${WINDOW_HEIGHT} "${BACKGROUND_IMG}"
 
 # Créez le DMG
 create-dmg \

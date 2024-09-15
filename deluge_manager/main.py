@@ -9,6 +9,7 @@ from urllib.parse import urljoin
 import configparser
 import os
 import keyring
+import sys
 from PIL import Image, ImageTk
 from torrents_actions import handle_remove_action, handle_pause_resume_action, handle_other_actions
 from torrents_loader import load_torrent, add_magnet
@@ -81,9 +82,18 @@ class DelugeApp:
         # Frame droit pour la bannière
         right_frame = ttk.Frame(cred_frame)
         right_frame.pack(side=RIGHT, fill=BOTH, expand=True)
+        banner_path = None
 
         # Chargement et redimensionnement de l'image
-        banner_image = Image.open("./deluge_manager/banner.png")
+        if hasattr(sys, '_MEIPASS'):
+            # PyInstaller exécutable
+            banner_path = os.path.join(sys._MEIPASS, 'banner.png')
+        else:
+           # Environnement de développement
+            banner_path = os.path.join(os.path.dirname(
+                __file__), 'banner.png')
+
+        banner_image = Image.open(banner_path)
         # Ajustez la taille selon vos besoins
         banner_image = banner_image.resize((400, 170), Image.LANCZOS)
         banner_photo = ImageTk.PhotoImage(banner_image)

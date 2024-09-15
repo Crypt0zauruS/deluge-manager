@@ -7,7 +7,7 @@ __pycache__/
 venv/
 env/
 .env
-
+.python-version
 # Distribution / packaging
 .Python
 build/
@@ -28,7 +28,6 @@ wheels/
 
 # PyInstaller
 *.manifest
-*.spec
 
 # Fichiers de logs
 *.log

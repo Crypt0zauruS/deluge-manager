@@ -30,7 +30,7 @@ Avant de commencer, assurez-vous d'avoir installé :
 
 Assurez-vous d'avoir les fichiers suivants dans votre répertoire de travail :
 
-- `DelugeManager.app` : Votre application compilée
+- `DelugeManager.app` : Votre application compilée dans le répertoire `/dist`
 - `icon.icns` : L'icône de votre application
 - `DM.png` : L'image de fond pour le DMG
 

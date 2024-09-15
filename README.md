@@ -214,35 +214,45 @@ chmod +x install.sh run.sh
 
 Si vous souhaitez compiler vous-même l'application en un exécutable, vous pouvez utiliser PyInstaller.
 
-Tout d'abord, si ce n'est pas déjà fait, créer et activer l'environnement virtuel dans le répertoire du projet :
+1. Tout d'abord, si ce n'est pas déjà fait, créer et activer l'environnement virtuel dans le répertoire du projet puis installer les dépendances :
 
-1. création de l'environnement virtuel :
-
-```bash
-python -m venv venv
-```
-
-2. activation de l'environnement virtuel :
-
-- Windows :
+Sous Windows :
 
 ```bash
-venv\Scripts\activate
+./install.bat
 ```
 
-- macOS/Linux :
+Sous MacOS et Linux :
+
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+2. Assurer-vous que vous êtes dans l'environnement virtuel :
+
+'(venv)' doit apparaître dans votre terminal.
+Si ce n'est pas le cas, activez l'environnement virtuel :
+
+- Sous MacOS et Linux :
 
 ```bash
 source venv/bin/activate
 ```
 
-3. puis installer les dépendances dans l'environnement virtuel :
+- sous Windows powershell:
 
 ```bash
-pip install -r requirements.txt
+.\venv\Scripts\Activate
 ```
 
-- puis installer PyInstaller :
+- sous Windows Command Prompt :
+
+```bash
+venv\Scripts\activate
+```
+
+3. puis installer PyInstaller :
 
 ```bash
 pip install pyinstaller
@@ -250,30 +260,11 @@ pip install pyinstaller
 
 4. Enfin compilez L'application:
 
-#### Windows
-
 ```bash
-pyinstaller --onefile --windowed --icon=icon.ico deluge_manager/main.py --name DelugeManager
+pyinstaller DelugeManager.spec
 ```
 
-#### Linux
-
-```bash
-pyinstaller --onefile --windowed deluge_manager/main.py --name DelugeManager
-```
-
-En cas de difficulté sous Linux, et si vous avez bien installé tous les prérequis, vous pouvez utiliser le script `compile-linux.sh` dans l'environnement virtuel :
-
-```bash
-chmod +x compile-linux.sh
-./compile-linux.sh
-```
-
-#### macOS
-
-```bash
-pyinstaller --onefile --windowed --icon=icon.icns deluge_manager/main.py --name DelugeManager --osx-bundle-identifier=org.deluge.manager
-```
+#### Notes pour macOS
 
 Note: sous MacOS vous obtiendrez l'app mais aussi l'executable brut pour le terminal dans le dossier /dist.
 
@@ -283,7 +274,7 @@ Si vous êtes sous Apple Silicon, vous pouvez compiler pour l'architecture Intel
 - ou en essayant directement avec les commandes suivantes, sans garantie de succès :
 
 ```bash
-pyinstaller --onefile --target-arch x86_64 --windowed --icon=icon.icns deluge_manager/main.py --name DelugeManager --osx-bundle-identifier=org.deluge.manager
+pyinstaller DelugeManager.spec --target-arch x86_64
 ```
 
 5. Désactivez l'environnement virtuel :

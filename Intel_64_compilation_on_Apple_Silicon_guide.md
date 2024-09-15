@@ -86,10 +86,10 @@ et/ou
 3. Créez un nouvel environnement Intel 64-bit dans le dossier du projet :
 
    ```bash
-   CONDA_SUBDIR=osx-64 conda create -p ./intel64_env python=3.11
+   CONDA_SUBDIR=osx-64 conda create -p ./intel64_env python=3.12
    ```
 
-   Remplacez 3.11 par la version de Python souhaitée
+   Remplacez 3.12 par la version de Python souhaitée
 
 4. Activez l'environnement :
 
@@ -120,14 +120,13 @@ Même si vous avez déjà installé les dépendances précédemment dans l'envir
 Essayez d'abord avec conda (confa-forge est un canal supplémentaire pour ttkbootstrap):
 
 ```bash
-conda install -y tk requests keyring pyinstaller
-conda install -y -c conda-forge ttkbootstrap
+conda install -y tk requests keyring pyinstaller Pillow
 ```
 
-Si certaines installations échouent avec conda, utilisez pip pour ces packages:
+Installez ttkbootstrap et pyinstaller via pip :
 
 ```bash
-pip install tk requests keyring pyinstaller ttkbootstrap
+pip install pyinstaller ttkbootstrap
 ```
 
 2. Vérifiez que tout est correctement installé :
@@ -165,7 +164,7 @@ python -c "import tkinter, requests, keyring, ttkbootstrap, PyInstaller; print('
 6. Si vous n'avez plus besoin de L'environnement virtuel, vous pouvez le supprimer pour nettoyer votre projet :
 
 ```bash
-conda remove --prefix ./intel64_env --all
+conda env remove --name intel64_env
 rm -rf ./intel64_env
 ```
 
@@ -175,6 +174,7 @@ rm -rf ./intel64_env
 - L'exécutable généré fonctionnera sur les Macs Intel et sur les Macs M1 via Rosetta 2.
 - Testez toujours l'application compilée sur différents systèmes pour assurer la compatibilité.
 - Si vous déplacez le projet, vous devrez recréer l'environnement car il est spécifique au dossier du projet.
+- vous pouvez créer le DMG avec le script fourni même dans votre environnement habituel (pas besoin de l'environnement Intel 64-bit)
 - N'hésitez pas à adapter ces instructions à vos propres projets et besoins !
 
 En suivant ces étapes, vous devriez être en mesure de compiler avec succès votre application Python pour l'architecture Intel, même sur un Mac Apple Silicon, avec l'environnement confiné au dossier de votre projet.
