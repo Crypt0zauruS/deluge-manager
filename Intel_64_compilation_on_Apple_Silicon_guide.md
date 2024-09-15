@@ -2,6 +2,12 @@
 
 Ce guide détaille le processus de création d'un environnement Conda Intel 64-bit dans le dossier de votre projet sur un Mac Apple Silicon, et la compilation d'une application Python pour l'architecture Intel.
 
+**Note for English-speaking users:**
+This tutorial is currently available in French only. An English version is planned for a future update. Thank you for your understanding.
+
+**Note pour les utilisateurs francophones :**
+Ce tuto est actuellement disponible uniquement en français. Une version anglaise est prévue pour une mise à jour future.
+
 ## Table des matières
 
 1. [Installation de Miniconda](#installation-de-miniconda)

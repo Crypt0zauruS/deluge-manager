@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages  # type: ignore
 
 setup(
     name="DelugeManager",
@@ -8,6 +8,7 @@ setup(
         'ttkbootstrap==1.10.1',
         'requests==2.32.3',
         'keyring==25.3.0',
+        'Pillow==10.4.0'
     ],
     entry_points={
         'console_scripts': [

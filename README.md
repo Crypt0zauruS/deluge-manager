@@ -1,7 +1,13 @@
 # Deluge Torrent Manager
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://semver.org)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://semver.org)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+
+**Note for English-speaking users:**
+This application is currently available in French only. An English version is planned for a future update. Thank you for your understanding.
+
+**Note pour les utilisateurs francophones :**
+Cette application est actuellement disponible uniquement en français. Une version anglaise est prévue pour une mise à jour future.
 
 <p align="center">
   <img src="Screenshot.png" alt="Scrennshot DelugeManager" width="400"/>
@@ -48,23 +54,23 @@ Voir la [documentation de Deluge](https://deluge-torrent.org/about/)
 
 #### Windows
 
-1. Téléchargez [ce fichier .exe](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.1.0/DelugeManager-v0.1.0-Windows-x64.exe).
+1. Téléchargez [ce fichier .exe](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.2.0/DelugeManager-v0.2.0-Windows-x64.exe).
 2. Double-cliquez sur `DelugeManager.exe` pour lancer l'application.
 
 #### macOS
 
-1. Téléchargez [ce fichier dmg](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.1.0/DelugeManager-v0.1.0-macOS-arm64.dmg) si vous êtes sur Mac Apple Silicon, ou [ce fichier dmg](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.1.0/DelugeManager-v0.1.0-macOS-x64.dmg) si vous êtes sur Mac Intel.
+1. Téléchargez [ce fichier dmg](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.2.0/DelugeManager-v0.2.0-macOS-arm64.dmg) si vous êtes sur Mac Apple Silicon, ou [ce fichier dmg](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.2.0/DelugeManager-v0.2.0-macOS-x64.dmg) si vous êtes sur Mac Intel.
 2. Ouvrez le DMG puis déplacez `DelugeManager.app` dans votre dossier Applications.
 3. Double-cliquez sur `DelugeManager.app` pour lancer l'application.
 
 #### Linux
 
-1. Téléchargez [ce fichier exécutable](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.1.0/DelugeManager-v0.1.0-linux-ubuntu20.04-x64).
+1. Téléchargez [ce fichier exécutable](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.2.0/DelugeManager-v0.2.0-linux-ubuntu20.04-x64).
 2. Ouvrez un terminal et naviguez vers le dossier contenant le fichier téléchargé.
 3. Renommez le fichier exécutable :
 
 ```bash
-mv DelugeManager-v0.1.0-linux-ubuntu20.04-x64 DelugeManager
+mv DelugeManager-v0.2.0-linux-ubuntu20.04-x64 DelugeManager
 ```
 
 3. Rendez le fichier exécutable : `chmod +x DelugeManager`
@@ -299,6 +305,8 @@ rm -rf venv
 ```
 
 3. Sous MacOS, vous pouvez générer un DMG personnalisé pour l'application en utilisant le script `create-dmg.sh`. Voir le fichier [DMG_creation_guide.md](DMG_creation_guide.md) pour plus de détails.
+
+4. Vous pouvez créer les icônes personnalisés icon.ico et icon.icns à partir de votre propre fichier `.png` au format carré en utilisant mon outil [Icon Maker](https://github.com/Crypt0zauruS/icon-maker) si vous êtes sous MacOS.
 
 ## Licence
 

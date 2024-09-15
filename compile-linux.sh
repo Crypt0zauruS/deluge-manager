@@ -11,7 +11,9 @@ pyinstaller --name=DelugeManager \
             --hidden-import ttkbootstrap \
             --hidden-import keyring.backends \
             --hidden-import PIL._tkinter_finder \
+            --hidden-import PIL._imaging \
             --collect-all ttkbootstrap \
+            --collect-all PIL \
             deluge_manager/main.py
 
 # Vérifier si la compilation a réussi

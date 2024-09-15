@@ -3,6 +3,12 @@
 Ce document explique comment créer un fichier DMG (Disk Image) personnalisé pour l'application DelugeManager sur macOS.
 La procédure est la même quelque soit l'architecture (Intel ou Apple Silicon).
 
+**Note for English-speaking users:**
+This tutorial is currently available in French only. An English version is planned for a future update. Thank you for your understanding.
+
+**Note pour les utilisateurs francophones :**
+Ce tuto est actuellement disponible uniquement en français. Une version anglaise est prévue pour une mise à jour future.
+
 ## Prérequis
 
 Avant de commencer, assurez-vous d'avoir installé :
