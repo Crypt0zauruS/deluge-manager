@@ -10,7 +10,7 @@ This application is currently available in French only. An English version is pl
 Cette application est actuellement disponible uniquement en français. Une version anglaise est prévue pour une mise à jour future.
 
 <p align="center">
-  <img src="Screenshot.png" alt="Scrennshot DelugeManager" width="400"/>
+  <img src="docs/Screenshot.png" alt="Scrennshot DelugeManager" width="400"/>
 </p>
 
 Deluge Torrent Manager est une application graphique pour gérer vos torrents via l'API Deluge. Elle offre une interface conviviale pour interagir avec votre serveur Deluge à distance.
@@ -270,7 +270,7 @@ Note: sous MacOS vous obtiendrez l'app mais aussi l'executable brut pour le term
 
 Si vous êtes sous Apple Silicon, vous pouvez compiler pour l'architecture Intel 64-bit :
 
-- en suivant les instructions [ici](Intel_64_compilation_on_Apple_Silicon_guide.md).
+- en suivant les instructions [ici](docs/Intel_64_compilation_on_Apple_Silicon_guide.md).
 - ou en essayant directement avec les commandes suivantes, sans garantie de succès :
 
 ```bash
@@ -295,7 +295,7 @@ deactivate
 rm -rf venv
 ```
 
-3. Sous MacOS, vous pouvez générer un DMG personnalisé pour l'application en utilisant le script `create-dmg.sh`. Voir le fichier [DMG_creation_guide.md](DMG_creation_guide.md) pour plus de détails.
+3. Sous MacOS, vous pouvez générer un DMG personnalisé pour l'application en utilisant le script `create-dmg.sh`. Voir le fichier [DMG_creation_guide.md](docs/DMG_creation_guide.md) pour plus de détails.
 
 4. Vous pouvez créer les icônes personnalisés icon.ico et icon.icns à partir de votre propre fichier `.png` au format carré en utilisant mon outil [Icon Maker](https://github.com/Crypt0zauruS/icon-maker) si vous êtes sous MacOS.
 

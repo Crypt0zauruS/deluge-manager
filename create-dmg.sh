@@ -8,7 +8,7 @@
 APP_NAME="DelugeManager"
 DMG_NAME="${APP_NAME}.dmg"
 APP_PATH="./dist/${APP_NAME}.app"
-ORIGINAL_BACKGROUND="./DM.png"
+ORIGINAL_BACKGROUND="./docs/DM.png"
 TEXT_COLOR="1.0 1.0 1.0"
 
 # Définissez la taille de la fenêtre DMG

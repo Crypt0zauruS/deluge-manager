@@ -58,6 +58,17 @@ elif sys.platform.startswith('win'):
 else:
     icon = None
 
+# Definition of version information for the Windows executable
+version_info = {
+    'version': '0.2.0',
+    'company_name': 'Crypt0zauruS',
+    'file_description': 'DelugeManager - A Deluge Torrent Client Manager',
+    'internal_name': 'DelugeManager',
+    'legal_copyright': 'Copyright © 2024 Crypt0zauruS. All rights reserved.',
+    'original_filename': 'DelugeManager.exe',
+    'product_name': 'DelugeManager',
+}
+
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
@@ -76,10 +87,25 @@ exe = EXE(pyz,
           target_arch=None,
           codesign_identity=None,
           entitlements_file=None,
-          icon=icon)
+          icon=icon,
+          version_info=version_info if sys.platform.startswith('win') else None,
+          )
 
+# Definition of the final application for macOS
 if sys.platform == 'darwin':
     app = BUNDLE(exe,
                  name='DelugeManager.app',
                  icon=icon,
-                 bundle_identifier='org.deluge.manager')
+                 bundle_identifier='org.deluge.manager',
+                 version='0.2.0',
+                 info_plist={
+                     'NSHumanReadableCopyright': 'Copyright © 2024 Crypt0zauruS. All rights reserved.',
+                     'CFBundleShortVersionString': '0.2.0',
+                     'CFBundleVersion': '0.2.0',
+                     'NSHighResolutionCapable': True,
+                     'NSPrincipalClass': 'NSApplication',
+                     'NSAppleScriptEnabled': False,
+                     'CFBundleName': 'DelugeManager',
+                     'CFBundleDisplayName': 'DelugeManager',
+                 })
+
