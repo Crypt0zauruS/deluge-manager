@@ -117,8 +117,6 @@ et/ou
 
 Même si vous avez déjà installé les dépendances précédemment dans l'environnement principal, vous devrez les réinstaller dans l'environnement Intel 64-bit.
 
-Essayez d'abord avec conda (confa-forge est un canal supplémentaire pour ttkbootstrap):
-
 ```bash
 conda install -y tk requests keyring pyinstaller Pillow
 ```
@@ -126,7 +124,7 @@ conda install -y tk requests keyring pyinstaller Pillow
 Installez ttkbootstrap et pyinstaller via pip :
 
 ```bash
-pip install pyinstaller ttkbootstrap
+pip install ttkbootstrap
 ```
 
 2. Vérifiez que tout est correctement installé :
@@ -142,7 +140,7 @@ python -c "import tkinter, requests, keyring, ttkbootstrap, PyInstaller; print('
 2. Compilez l'application :
 
    ```bash
-   pyinstaller --onefile --windowed --icon=icon.icns deluge_manager/main.py --name DelugeManager --osx-bundle-identifier=org.deluge.manager
+   pyinstaller DelugeManager.spec
    ```
 
 3. L'exécutable compilé se trouvera dans le dossier `dist`. Vous aurez également un fichier DelugeManager sans extension, la version pour terminal.

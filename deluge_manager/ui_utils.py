@@ -1,6 +1,9 @@
 import tkinter as tk
 import ttkbootstrap as ttk
-
+from ttkbootstrap.constants import *
+import webbrowser
+import sys
+import platform
 
 def format_size(size_in_bytes):
     for unit in ['B', 'KB', 'MB', 'GB']:
@@ -131,6 +134,69 @@ def ask_yes_no(master, title, message):
     master.wait_window(dialog)
 
     return result.get()
+
+
+def show_about(master):
+    about_window = tk.Toplevel(master)
+    about_window.title("A propos de DelugeManager")
+    about_window.geometry("400x350")
+    about_window.resizable(False, False)
+
+    style = ttk.Style()
+    style.configure("TNotebook.Tab", padding=(10, 5))
+
+    notebook = ttk.Notebook(about_window)
+    notebook.pack(expand=True, fill="both", padx=10, pady=10)
+
+    # Onglet Général
+    general_frame = ttk.Frame(notebook)
+    notebook.add(general_frame, text="General")
+
+    ttk.Label(general_frame, text="DelugeManager", font=("TkDefaultFont", 16, "bold")).pack(pady=10)
+    ttk.Label(general_frame, text="Version 0.2.0").pack()
+    ttk.Label(general_frame, text="© 2024 Crypt0zauruS").pack()
+    ttk.Label(general_frame, text="All rights reserved").pack(pady=(0, 10))
+
+    ttk.Button(general_frame, text="Visiter le GitHub", 
+               command=lambda: webbrowser.open("https://github.com/Crypt0zauruS/deluge-manager")).pack(pady=5)
+    ttk.Button(general_frame, text="Reporter un problème", 
+               command=lambda: webbrowser.open("https://github.com/Crypt0zauruS/deluge-manager/issues")).pack(pady=5)
+
+    # Onglet Système
+    system_frame = ttk.Frame(notebook)
+    notebook.add(system_frame, text="Infos Système")
+
+    system_info = f"OS: {platform.system()} {platform.version()}\n"
+    system_info += f"Python: {sys.version.split()[0]}\n"
+    system_info += f"Tkinter: {tk.TkVersion}\n"
+
+    ttk.Label(system_frame, text="Informations Système", font=("TkDefaultFont", 12, "bold")).pack(pady=10)
+    ttk.Label(system_frame, text=system_info, justify="left").pack(padx=10)
+
+    # Onglet Licence
+    license_frame = ttk.Frame(notebook)
+    notebook.add(license_frame, text="Licence")
+
+    license_text = "Ce projet est sous licence Creative Commons Attribution 4.0 International (CC BY 4.0).\n\n"
+    license_text += "Vous êtes libre de :\n"
+    license_text += "- Partager : copier et redistribuer le matériel sous n'importe quel format\n"
+    license_text += "- Adapter : remixer, transformer et créer à partir du matériel\n\n"
+    license_text += "Selon les conditions suivantes :\n"
+    license_text += "- Attribution : vous devez créditer l'œuvre, intégrer un lien vers la licence et indiquer si des modifications ont été effectuées à l'œuvre."
+
+    license_textbox = tk.Text(license_frame, wrap="word", height=10)
+    license_textbox.pack(padx=10, pady=10, fill="both", expand=True)
+    license_textbox.insert("1.0", license_text)
+    license_textbox.config(state="disabled")
+
+    ttk.Button(about_window, text="Fermer", command=about_window.destroy).pack(pady=10)
+
+    # Utiliser la fonction center_dialog existante
+    center_dialog(about_window, master)
+
+    about_window.transient(master)
+    about_window.grab_set()
+    master.wait_window(about_window)
 
 
 def center_dialog(dialog, master):

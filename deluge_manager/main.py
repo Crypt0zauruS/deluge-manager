@@ -14,7 +14,7 @@ from PIL import Image, ImageTk
 from torrents_actions import handle_remove_action, handle_pause_resume_action, handle_other_actions
 from torrents_loader import load_torrent, add_magnet
 from torrents_updater import fetch_torrents, update_torrents
-from ui_utils import show_message, ask_yes_no
+from ui_utils import show_message, ask_yes_no, show_about
 
 home_dir = os.path.expanduser("~")
 config_file = os.path.join(home_dir, 'deluge_app_config.ini')
@@ -49,6 +49,15 @@ class DelugeApp:
         # Frame principal
         main_frame = ttk.Frame(master, padding="20 20 20 20")
         main_frame.pack(fill=BOTH, expand=YES)
+
+        # Ajoutez un menu à votre application
+        self.menu_bar = tk.Menu(master)
+        master.config(menu=self.menu_bar)
+
+        # Créez un menu "Help"
+        help_menu = tk.Menu(self.menu_bar, tearoff=0)
+        self.menu_bar.add_cascade(label="Aide", menu=help_menu)
+        help_menu.add_command(label="A propos", command=lambda: show_about(self.master))
 
         # Frame pour les credentials
         cred_frame = ttk.LabelFrame(

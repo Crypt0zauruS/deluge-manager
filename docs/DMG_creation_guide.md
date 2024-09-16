@@ -59,6 +59,8 @@ Le script `create-dmg.sh` automatise le processus de création du DMG. Voici ses
    ./create-dmg.sh
    ```
 
+   Attendez que "DMG créé avec succès" s'affiche dans le terminal (vous verrez l'interface du dmg apparaitre à l'écran et changer durant sa construction, mais ne touchez à rien).
+
 4. Une fois terminé, vous trouverez le fichier `DelugeManager.dmg` dans le même répertoire.
 
 ## Personnalisation

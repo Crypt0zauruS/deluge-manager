@@ -268,14 +268,7 @@ pyinstaller DelugeManager.spec
 
 Note: sous MacOS vous obtiendrez l'app mais aussi l'executable brut pour le terminal dans le dossier /dist.
 
-Si vous êtes sous Apple Silicon, vous pouvez compiler pour l'architecture Intel 64-bit :
-
-- en suivant les instructions [ici](docs/Intel_64_compilation_on_Apple_Silicon_guide.md).
-- ou en essayant directement avec les commandes suivantes, sans garantie de succès :
-
-```bash
-pyinstaller DelugeManager.spec --target-arch x86_64
-```
+Si vous êtes sous Apple Silicon, vous pouvez compiler pour l'architecture Intel 64-bit en suivant les instructions [ici](docs/Intel_64_compilation_on_Apple_Silicon_guide.md).
 
 5. Désactivez l'environnement virtuel :
 
