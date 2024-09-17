@@ -65,16 +65,22 @@ Voir la [documentation de Deluge](https://deluge-torrent.org/about/)
 
 #### Linux
 
-1. Téléchargez [ce fichier exécutable](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.2.0/DelugeManager-v0.2.0-linux-ubuntu20.04-x64).
-2. Ouvrez un terminal et naviguez vers le dossier contenant le fichier téléchargé.
-3. Renommez le fichier exécutable :
+1. Téléchargez [ce fichier zip](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.2.0/DelugeManager-v0.2.0-linux-ubuntu20.04-x64.zip).
+2. Extrayez le contenu du fichier zip.
+3. Ouvrez un terminal et naviguez vers le dossier décompressé.
+4. Rendez le script d'installation exécutable :
 
 ```bash
-mv DelugeManager-v0.2.0-linux-ubuntu20.04-x64 DelugeManager
+chmod +x ./linux-install.sh
 ```
 
-3. Rendez le fichier exécutable : `chmod +x DelugeManager`
-4. Lancez l'application : `./DelugeManager`
+5. Lancez l'installation en mode sudo:
+
+   ```bash
+   sudo ./linux-install.sh
+   ```
+
+   Vous pourrez ensuite lancer l'application en cherchant "DelugeManager" dans votre menu d'applications.
 
 ### Utilisation
 
@@ -290,7 +296,32 @@ rm -rf venv
 
 3. Sous MacOS, vous pouvez générer un DMG personnalisé pour l'application en utilisant le script `create-dmg.sh`. Voir le fichier [DMG_creation_guide.md](docs/DMG_creation_guide.md) pour plus de détails.
 
-4. Vous pouvez créer les icônes personnalisés icon.ico et icon.icns à partir de votre propre fichier `.png` au format carré en utilisant mon outil [Icon Maker](https://github.com/Crypt0zauruS/icon-maker) si vous êtes sous MacOS.
+4. Vous pouvez créer les icônes personnalisés icon.ico et icon.icns ainsi que les icônes pour Linux à partir de votre propre fichier `.png` au format carré en utilisant mon outil [Icon Maker](https://github.com/Crypt0zauruS/icon-maker) si vous êtes sous MacOS.
+
+- renommez votre png en `icon.png`
+
+- lancer le script `iconmaker.sh`
+
+```bash
+./iconmaker.sh /path/to/your/icon.png
+```
+
+- copier les fichiers `icon.ico` et/ou `icon.icns` et/ou le répertoire `linux_icons` dans la racine du projet (cela dépend des plateformes pour lesquelles vous souhaitez compiler).
+
+5. Sous Linux, vous pouvez installer votre application fraichement compilée en utilisant le script `linux-install.sh` fourni.
+
+- Assurez-vous de la présence des répertoires `dist` et `linux_icons` dans le répertoire du projet.
+- Assurez-vous que le script est exécutable :
+
+```bash
+chmod +x ./linux-install.sh
+```
+
+Lancez le script en mode sudo :
+
+```bash
+sudo ./linux-install.sh
+```
 
 ## Licence
 
