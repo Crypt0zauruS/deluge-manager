@@ -28,11 +28,11 @@ Voir la [documentation de Deluge](https://deluge-torrent.org/about/)
 - Gestion des torrents à distance: pause, reprise, suppression
 - Support des fichiers .torrent et des liens magnet
 - Option pour supprimer automatiquement les fichiers .torrent de votre appareil après ajout
-- Compatible avec Windows, macOS et Linux
+- Compatible avec Windows, macOS et Linux (Ubuntu et dérivés)
 
 ## Configuration requise
 
-- Système d'exploitation : Windows 7+, macOS 10.12+, ou Linux avec interface graphique
+- Système d'exploitation : Windows 7+, macOS 10.12+, ou Linux avec interface graphique (Ubuntu 20.04+ recommandé)
 - Serveur Deluge configuré et accessible à distance
 
 ## Table des matières
@@ -54,8 +54,8 @@ Voir la [documentation de Deluge](https://deluge-torrent.org/about/)
 
 #### Windows
 
-1. Téléchargez [ce fichier .exe](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.2.0/DelugeManager-v0.2.0-Windows-x64.exe).
-2. Double-cliquez sur `DelugeManager.exe` pour lancer l'application.
+1. Téléchargez [l'installateur](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.2.0/DelugeManager-v0.2.0-Windows-x64-Setup.exe).
+2. Double-cliquez dessus pour installer l'application. Lisez bien les informations qui s'afficheront. Un désinstallateur sera également ajouté à votre système.
 
 #### macOS
 
@@ -63,24 +63,25 @@ Voir la [documentation de Deluge](https://deluge-torrent.org/about/)
 2. Ouvrez le DMG puis déplacez `DelugeManager.app` dans votre dossier Applications.
 3. Double-cliquez sur `DelugeManager.app` pour lancer l'application.
 
-#### Linux
+#### Linux (Ubuntu et dérivés)
 
 1. Téléchargez [ce fichier zip](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.2.0/DelugeManager-v0.2.0-linux-ubuntu20.04-x64.zip).
 2. Extrayez le contenu du fichier zip.
-3. Ouvrez un terminal et naviguez vers le dossier décompressé.
-4. Rendez le script d'installation exécutable :
+3. Lisez le Guide d'Installation pour plus d'informations.
+4. Ouvrez un terminal et naviguez vers le dossier décompressé.
+5. Rendez le script d'installation exécutable :
 
 ```bash
 chmod +x ./linux-install.sh
 ```
 
-5. Lancez l'installation en mode sudo:
+6. Lancez l'installation en mode sudo:
 
    ```bash
    sudo ./linux-install.sh
    ```
 
-   Vous pourrez ensuite lancer l'application en cherchant "DelugeManager" dans votre menu d'applications.
+Vous pourrez ensuite lancer l'application en cherchant "DelugeManager" dans votre menu d'applications.
 
 ### Utilisation
 
@@ -114,7 +115,7 @@ Sur MacOS, vous pouvez également utiliser [Homebrew](https://brew.sh/) pour ins
 brew install python
 ```
 
-Sur linux, vous pouvez utiliser votre gestionnaire de paquets pour installer Python :
+Sur linux (Ubuntu et dérivés), vous pouvez utiliser votre gestionnaire de paquets pour installer Python :
 
 ```bash
 sudo apt update && sudo apt upgrade -y

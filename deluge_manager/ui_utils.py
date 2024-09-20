@@ -5,6 +5,7 @@ import webbrowser
 import sys
 import platform
 
+
 def format_size(size_in_bytes):
     for unit in ['B', 'KB', 'MB', 'GB']:
         if size_in_bytes < 1024.0:
@@ -152,25 +153,27 @@ def show_about(master):
     general_frame = ttk.Frame(notebook)
     notebook.add(general_frame, text="General")
 
-    ttk.Label(general_frame, text="DelugeManager", font=("TkDefaultFont", 16, "bold")).pack(pady=10)
+    ttk.Label(general_frame, text="DelugeManager", font=(
+        "TkDefaultFont", 16, "bold")).pack(pady=10)
     ttk.Label(general_frame, text="Version 0.2.0").pack()
     ttk.Label(general_frame, text="© 2024 Crypt0zauruS").pack()
     ttk.Label(general_frame, text="All rights reserved").pack(pady=(0, 10))
 
-    ttk.Button(general_frame, text="Visiter le GitHub", 
+    ttk.Button(general_frame, text="Visiter le GitHub",
                command=lambda: webbrowser.open("https://github.com/Crypt0zauruS/deluge-manager")).pack(pady=5)
-    ttk.Button(general_frame, text="Reporter un problème", 
+    ttk.Button(general_frame, text="Reporter un problème",
                command=lambda: webbrowser.open("https://github.com/Crypt0zauruS/deluge-manager/issues")).pack(pady=5)
 
     # Onglet Système
     system_frame = ttk.Frame(notebook)
     notebook.add(system_frame, text="Infos Système")
 
-    system_info = f"OS: {platform.system()} {platform.version()}\n"
+    system_info = f"OS: {platform.system()}\n{platform.version()}\n"
     system_info += f"Python: {sys.version.split()[0]}\n"
     system_info += f"Tkinter: {tk.TkVersion}\n"
 
-    ttk.Label(system_frame, text="Informations Système", font=("TkDefaultFont", 12, "bold")).pack(pady=10)
+    ttk.Label(system_frame, text="Informations Système",
+              font=("TkDefaultFont", 12, "bold")).pack(pady=10)
     ttk.Label(system_frame, text=system_info, justify="left").pack(padx=10)
 
     # Onglet Licence
@@ -189,7 +192,8 @@ def show_about(master):
     license_textbox.insert("1.0", license_text)
     license_textbox.config(state="disabled")
 
-    ttk.Button(about_window, text="Fermer", command=about_window.destroy).pack(pady=10)
+    ttk.Button(about_window, text="Fermer",
+               command=about_window.destroy).pack(pady=10)
 
     # Utiliser la fonction center_dialog existante
     center_dialog(about_window, master)
