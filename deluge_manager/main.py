@@ -11,10 +11,13 @@ import os
 import keyring
 import sys
 from PIL import Image, ImageTk
-from torrents_actions import handle_remove_action, handle_pause_resume_action, handle_other_actions
+from torrents_actions import show_torrent_context_menu, handle_remove_action, handle_pause_resume_action, handle_other_actions, edit_tracker
 from torrents_loader import load_torrent, add_magnet
 from torrents_updater import fetch_torrents, update_torrents
-from ui_utils import show_message, ask_yes_no, show_about
+from ui_utils import show_message, ask_yes_no, show_about, create_menus, configure_treeview, update_button_texts, update_label_texts, update_button_state, create_entry_with_paste, configure_button_style
+from ui_settings import open_settings_dialog, load_settings
+from update import check_for_update
+from localization import _, set_language
 
 home_dir = os.path.expanduser("~")
 config_file = os.path.join(home_dir, 'deluge_app_config.ini')
@@ -23,8 +26,12 @@ config_file = os.path.join(home_dir, 'deluge_app_config.ini')
 class DelugeApp:
     def __init__(self, master):
         self.master = master
-        master.title("Deluge Torrent Manager")
-        master.geometry("1200x900")
+
+        master.title(_("Deluge Torrent Manager"))
+
+        self.config = configparser.ConfigParser()
+        self.config_file = config_file
+        self.load_config()
 
         style = ttk.Style("darkly")
         style.configure("Treeview", rowheight=30)
@@ -32,10 +39,7 @@ class DelugeApp:
         style.configure("Treeview.Cell", padding=(5, 5))
         style.configure("info.Treeview.Cell", padding=(5, 5))
 
-        self.config = configparser.ConfigParser()
-        self.config_file = config_file
         self.is_connected = False
-        self.load_config()
 
         self.url_var = tk.StringVar(value=self.config.get(
             'Credentials', 'url', fallback="http://exemple_de_serveur.domaine.com"))
@@ -50,60 +54,73 @@ class DelugeApp:
         main_frame = ttk.Frame(master, padding="20 20 20 20")
         main_frame.pack(fill=BOTH, expand=YES)
 
-        # Ajoutez un menu à votre application
+        # Ajout du menu
         self.menu_bar = tk.Menu(master)
         master.config(menu=self.menu_bar)
 
-        # Créez un menu "Help"
+        # Menu "Aide"
         help_menu = tk.Menu(self.menu_bar, tearoff=0)
-        self.menu_bar.add_cascade(label="Aide", menu=help_menu)
-        help_menu.add_command(label="A propos", command=lambda: show_about(self.master))
+        self.menu_bar.add_cascade(label=_("Help"), menu=help_menu)
+        help_menu.add_command(
+            label=_("About"), command=lambda: show_about(self.master))
+
+        # Menu "Paramètres"
+        settings_menu = tk.Menu(self.menu_bar, tearoff=0)
+        self.menu_bar.add_cascade(label=_("Settings"), menu=settings_menu)
+        settings_menu.add_command(
+            label=_("Preferences"), command=self.open_settings)
+        settings_menu.add_command(
+            label=_("Check for updates"), command=lambda: check_for_update(self))
+
+        # Sous-menu "Langue"
+        language_menu = tk.Menu(settings_menu, tearoff=0)
+        settings_menu.add_cascade(label=_("Language"), menu=language_menu)
+        language_menu.add_command(
+            label=_("French"), command=lambda: self.change_app_language('fr'))
+        language_menu.add_command(
+            label=_("English"), command=lambda: self.change_app_language('en'))
 
         # Frame pour les credentials
-        cred_frame = ttk.LabelFrame(
-            main_frame, text="Credentials", padding="20 10 20 10")
+        cred_frame = ttk.LabelFrame(main_frame, text=_(
+            "Credentials"), padding="20 10 20 10")
         cred_frame.pack(fill=X, pady=10)
 
-        # Frame gauche pour les champs de saisie
-        left_frame = ttk.Frame(cred_frame)
-        left_frame.pack(side=LEFT, fill=Y, expand=False)
+        # Frame pour les champs de saisie
+        input_frame = ttk.Frame(cred_frame)
+        # Ajoutez un peu d'espace à droite des champs
+        input_frame.pack(side=LEFT, fill=Y, padx=(0, 20))
 
-        ttk.Label(left_frame, text="URL du serveur Deluge:").grid(
+        ttk.Label(input_frame, text=_("Deluge server URL:")).grid(
             row=0, column=0, padx=5, pady=7, sticky='e')
-        ttk.Entry(left_frame, textvariable=self.url_var, width=40).grid(
-            row=0, column=1, padx=5, pady=7, sticky='we')
+        url_frame = create_entry_with_paste(self, input_frame, self.url_var)
+        url_frame.grid(row=0, column=1, padx=5, pady=7, sticky='w')
 
-        ttk.Label(left_frame, text="Port:").grid(
+        ttk.Label(input_frame, text=_("Port:")).grid(
             row=1, column=0, padx=5, pady=7, sticky='e')
-        ttk.Entry(left_frame, textvariable=self.port_var).grid(
-            row=1, column=1, padx=5, pady=7, sticky='we')
+        port_frame = create_entry_with_paste(self, input_frame, self.port_var)
+        port_frame.grid(row=1, column=1, padx=5, pady=7, sticky='w')
 
-        ttk.Label(left_frame, text="Nom d'utilisateur:").grid(
+        ttk.Label(input_frame, text=_("Username:")).grid(
             row=2, column=0, padx=5, pady=7, sticky='e')
-        ttk.Entry(left_frame, textvariable=self.username_var).grid(
-            row=2, column=1, padx=5, pady=7, sticky='we')
+        username_frame = create_entry_with_paste(self,
+                                                 input_frame, self.username_var)
+        username_frame.grid(row=2, column=1, padx=5, pady=7, sticky='w')
 
-        ttk.Label(left_frame, text="Mot de passe:").grid(
+        ttk.Label(input_frame, text=_("Password:")).grid(
             row=3, column=0, padx=5, pady=7, sticky='e')
-        ttk.Entry(left_frame, textvariable=self.password_var,
-                  show="*").grid(row=3, column=1, padx=5, pady=7, sticky='we')
+        password_frame = create_entry_with_paste(self,
+                                                 input_frame, self.password_var, show="*")
+        password_frame.grid(row=3, column=1, padx=5, pady=7, sticky='w')
 
         # Frame droit pour la bannière
         right_frame = ttk.Frame(cred_frame)
-        right_frame.pack(side=RIGHT, fill=BOTH, expand=True)
-        banner_path = None
+        right_frame.pack(side=RIGHT, fill=Y)
 
         # Chargement et redimensionnement de l'image
-        if hasattr(sys, '_MEIPASS'):
-            # PyInstaller exécutable
-            banner_path = os.path.join(sys._MEIPASS, 'banner.png')
-        else:
-           # Environnement de développement
-            banner_path = os.path.join(os.path.dirname(
-                __file__), 'banner.png')
-
+        banner_path = os.path.join(sys._MEIPASS, 'banner.png') if hasattr(
+            sys, '_MEIPASS') else os.path.join(os.path.dirname(__file__), 'banner.png')
         banner_image = Image.open(banner_path)
-        # Ajustez la taille selon vos besoins
+
         banner_image = banner_image.resize((400, 170), Image.LANCZOS)
         banner_photo = ImageTk.PhotoImage(banner_image)
 
@@ -112,49 +129,28 @@ class DelugeApp:
         banner_label.image = banner_photo  # Garder une référence
         banner_label.pack(expand=True, anchor='center')
 
+        # Configuration du style pour les boutons
+        configure_button_style(self, style)
+
         # Frame pour les boutons de connexion
-        style.configure("Purple.TButton",
-                        background="#8E44AD",  # Couleur mauve
-                        foreground="white",
-                        borderwidth=0,  # Supprimer la bordure
-                        focuscolor="#8E44AD",  # Couleur quand le bouton a le focus
-                        lightcolor="#8E44AD",
-                        darkcolor="#8E44AD",
-                        relief="flat",  # Pas de relief
-                        padding=(10, 5))
-
-        style.map("Purple.TButton",
-                  background=[('active', '#9B59B6'),  # Mauve plus clair au survol
-                              # Mauve plus foncé quand pressé
-                              ('pressed', '#7D3C98')],
-                  foreground=[('active', 'white'),
-                              ('pressed', 'white')],
-                  bordercolor=[('active', '#9B59B6'),
-                               ('pressed', '#7D3C98')],
-                  lightcolor=[('active', '#9B59B6'),
-                              ('pressed', '#7D3C98')],
-                  darkcolor=[('active', '#9B59B6'),
-                             ('pressed', '#7D3C98')])
-
         self.button_frame = ttk.Frame(main_frame)
         self.button_frame.pack(fill=X, pady=10)
 
-        self.connect_button = ttk.Button(
-            self.button_frame, text="Connexion", command=self.login, style='success.TButton')
-
-        self.disconnect_button = ttk.Button(
-            self.button_frame, text="Déconnecter", command=self.disconnect, style='Purple.TButton')
-
-        self.update_credentials_button = ttk.Button(
-            self.button_frame, text="Mise à jour des credentials",
-            command=self.update_config, style='info.TButton')
-
-        self.clear_credentials_button = ttk.Button(
-            self.button_frame, text="Effacer les credentials",
-            command=self.clear_credentials, style='danger.TButton')
+        self.connect_button = ttk.Button(self.button_frame, text=_(
+            "Connection"), command=self.login, style='success.TButton')
+        self.disconnect_button = ttk.Button(self.button_frame, text=_(
+            "Disconnect"), command=self.disconnect, style='Purple.TButton')
+        self.update_credentials_button = ttk.Button(self.button_frame, text=_(
+            "Update Credentials"), command=self.update_config, style='info.TButton')
+        self.clear_credentials_button = ttk.Button(self.button_frame, text=_(
+            "Clear Credentials"), command=self.clear_credentials, style='danger.TButton')
+        self.edit_tracker_button = ttk.Button(
+            self.button_frame, text=_("Edit Tracker"),
+            command=lambda: edit_tracker(self),
+            style='primary.Outline.TButton')
 
         # Initialiser l'affichage des boutons
-        self.update_button_state()
+        update_button_state(self)
 
         # Ajout d'un label de statut permanent
         self.status_label = ttk.Label(main_frame, text="")
@@ -165,67 +161,75 @@ class DelugeApp:
                                  'up_speed', 'eta', 'state'), show='headings', style='info.Treeview', selectmode='extended')
         self.tree.pack(fill=BOTH, expand=YES, pady=10)
 
-        self.tree.tag_configure('oddrow', background='#2a3038')
-        self.tree.tag_configure('evenrow', background='#212529')
-        self.tree.tag_configure('downloading', background='#D3D3D3')
+        configure_treeview(self)
 
-        self.tree.heading('name', text='Nom')
-        self.tree.heading('size', text='Taille')
-        self.tree.heading('progress', text='Progression')
-        self.tree.heading('down_speed', text='Vitesse DL')
-        self.tree.heading('up_speed', text='Vitesse UL')
-        self.tree.heading('eta', text='ETA')
-        self.tree.heading('state', text='État')
+        # Lier à la fois Button-2 et Button-3 pour couvrir Mac et autres systèmes
+        self.tree.bind(
+            "<Button-2>", lambda event: show_torrent_context_menu(self, event))
+        self.tree.bind(
+            "<Button-3>", lambda event: show_torrent_context_menu(self, event))
+        # Ajouter également une liaison pour le clic Control sur Mac
+        self.tree.bind(
+            "<Control-1>", lambda event: show_torrent_context_menu(self, event))
 
-        self.tree.column('name', width=300, anchor='w')
-        self.tree.column('size', width=100, anchor='center')
-        self.tree.column('progress', width=100, anchor='center')
-        self.tree.column('down_speed', width=100, anchor='center')
-        self.tree.column('up_speed', width=100, anchor='center')
-        self.tree.column('eta', width=100, anchor='center')
-        self.tree.column('state', width=100, anchor='center')
+        # Charger les paramètres
+        load_settings(self.config, self.master, self.tree)
 
         # Frame pour les boutons de contrôle
         self.control_frame = ttk.Frame(main_frame)
         self.control_frame.pack(fill=X, pady=10)
         self.control_frame.pack_forget()  # Cacher initialement
 
-        ttk.Button(self.control_frame, text="Pause", command=lambda: self.torrent_action(
-            "pause"), style='warning.TButton').pack(side=LEFT, padx=2)
-        ttk.Button(self.control_frame, text="Reprise", command=lambda: self.torrent_action(
-            "resume"), style='success.TButton').pack(side=LEFT, padx=2)
-        ttk.Button(self.control_frame, text="Enlever", command=lambda: self.torrent_action(
-            "remove"), style='danger.TButton').pack(side=LEFT, padx=2)
-        ttk.Button(self.control_frame, text="Supprimer avec données", command=lambda: self.torrent_action(
-            "remove_with_data"), style='danger.Outline.TButton').pack(side=LEFT, padx=2)
-        ttk.Button(self.control_frame, text="Refresh", command=lambda: fetch_torrents(
-            self), style='info.TButton').pack(side=LEFT, padx=2)
+        self.create_control_buttons()
 
         # Frame pour le bouton de chargement de torrent et la case à cocher
         self.load_torrent_frame = ttk.Frame(self.control_frame)
         self.load_torrent_frame.pack(side=LEFT, padx=2)
 
-        self.load_torrent_button = ttk.Button(
-            self.load_torrent_frame, text="Charger torrent(s)", command=lambda: load_torrent(self), style='primary.TButton')
-
+        self.load_torrent_button = ttk.Button(self.load_torrent_frame, text=_(
+            "Load Torrent(s)"), command=lambda: load_torrent(self), style='primary.TButton')
         self.load_torrent_button.pack(side=LEFT)
 
         ttk.Label(self.load_torrent_frame, text="", width=2).pack(side=LEFT)
 
         self.delete_torrent_var = tk.BooleanVar()
-        self.delete_torrent_checkbox = ttk.Checkbutton(
-            self.load_torrent_frame, text="Supprimer .torrent après chargement", variable=self.delete_torrent_var)
+        self.delete_torrent_checkbox = ttk.Checkbutton(self.load_torrent_frame, text=_(
+            "Delete .torrent after loading"), variable=self.delete_torrent_var)
         self.delete_torrent_checkbox.pack(side=LEFT)
 
         self.load_torrent_frame.pack_forget()  # Cacher initialement
 
-        self.add_magnet_button = ttk.Button(
-            self.control_frame, text="Coller un magnet", command=lambda: add_magnet(self), style='primary.Outline.TButton')
+        self.add_magnet_button = ttk.Button(self.control_frame, text=_(
+            "Send Magnet"), command=lambda: add_magnet(self), style='primary.Outline.TButton')
         self.add_magnet_button.pack(side=LEFT, padx=2)
         self.add_magnet_button.pack_forget()
 
         self.update_thread = None
         self.update_job = None
+
+    def open_settings(self):
+        if open_settings_dialog(self.master, self.config, self.config_file):
+            load_settings(self.config, self.master, self.tree)
+            if self.is_connected:
+                fetch_torrents(self)
+            else:
+                new_color = self.config.get(
+                    'Settings', 'download_color', fallback='#D3D3D3')
+                self.tree.tag_configure('downloading', background=new_color)
+
+    def create_control_buttons(self):
+        buttons = [
+            (_("Pause"), lambda: self.torrent_action("pause"), 'warning.TButton'),
+            (_("Resume"), lambda: self.torrent_action("resume"), 'success.TButton'),
+            (_("Remove"), lambda: self.torrent_action("remove"), 'danger.TButton'),
+            (_("Remove with data"), lambda: self.torrent_action(
+                "remove_with_data"), 'danger.Outline.TButton'),
+            (_("Refresh"), lambda: fetch_torrents(self), 'info.TButton')
+        ]
+
+        for text, command, style in buttons:
+            ttk.Button(self.control_frame, text=text, command=command,
+                       style=style).pack(side=LEFT, padx=2)
 
     def load_config(self):
         if os.path.exists(config_file):
@@ -233,6 +237,18 @@ class DelugeApp:
         else:
             self.config['Credentials'] = {
                 'url': '', 'port': '', 'username': ''}
+
+        if 'Settings' not in self.config:
+            self.config['Settings'] = {}
+
+        if 'download_color' not in self.config['Settings']:
+            self.config['Settings']['download_color'] = '#D3D3D3'
+        if 'window_size' not in self.config['Settings']:
+            self.config['Settings']['window_size'] = '1200x900'
+
+        if not os.path.exists(config_file):
+            with open(config_file, 'w') as configfile:
+                self.config.write(configfile)
 
     def get_password(self):
         username = self.config.get('Credentials', 'username', fallback="")
@@ -245,8 +261,7 @@ class DelugeApp:
         if self.update_job:
             self.master.after_cancel(self.update_job)
             self.update_job = None
-        self.session = None  # Réinitialiser la session
-        # Vider la liste des torrents
+        self.session = None
         self.tree.delete(*self.tree.get_children())
         self.load_torrent_frame.pack_forget()
         self.add_magnet_button.pack_forget()
@@ -254,7 +269,7 @@ class DelugeApp:
         self.disconnect_button.pack_forget()
         self.connect_button.pack(side=LEFT, padx=5)
         self.status_label.config(text="")
-        self.update_button_state()
+        update_button_state(self)
 
     def update_config(self):
         new_config = {
@@ -264,7 +279,6 @@ class DelugeApp:
         }
         new_password = self.password_var.get().strip()
 
-        # Vérification des credentials manquants
         missing_credentials = [key for key,
                                value in new_config.items() if not value]
         if not new_password:
@@ -272,8 +286,8 @@ class DelugeApp:
 
         if missing_credentials:
             missing_fields = ', '.join(missing_credentials)
-            show_message(self.master,
-                         "Erreur", f"Les champs suivants sont manquants : {missing_fields}")
+            show_message(self.master, _("Error"), _(
+                "The following fields are missing: {}").format(missing_fields))
             return
 
         old_config = dict(self.config['Credentials'])
@@ -287,28 +301,15 @@ class DelugeApp:
             with open(config_file, 'w') as configfile:
                 self.config.write(configfile)
 
-            # Mise à jour du mot de passe dans le keyring si nécessaire
             if new_config['username'] and password_changed:
                 keyring.set_password(
                     "DelugeApp", new_config['username'], new_password)
             self.disconnect()
-            show_message(self.master,
-                         "Mise à jour", "Les credentials ont été mis à jour.")
+            show_message(self.master, _("Update"), _(
+                "Credentials have been updated."))
         else:
-            show_message(self.master,
-                         "Information", "Aucun changement dans les credentials.")
-
-    def update_button_state(self):
-        if self.is_connected:
-            self.connect_button.pack_forget()
-            self.disconnect_button.pack(side=LEFT, padx=5)
-            self.update_credentials_button.pack_forget()
-            self.clear_credentials_button.pack_forget()
-        else:
-            self.disconnect_button.pack_forget()
-            self.connect_button.pack(side=LEFT, padx=5)
-            self.update_credentials_button.pack(side=LEFT, padx=5)
-            self.clear_credentials_button.pack(side=LEFT, padx=5)
+            show_message(self.master, _("Information"),
+                         _("No changes in credentials."))
 
     def login(self):
         url = self.url_var.get()
@@ -317,8 +318,8 @@ class DelugeApp:
         password = self.password_var.get()
 
         if not url or not port or not username or not password:
-            show_message(self.master,
-                         "Erreur", "Veuillez remplir tous les champs obligatoires.")
+            show_message(self.master, _("Error"), _(
+                "Please fill in all required fields."))
             return
 
         self.base_url = f"{url}:{port}/"
@@ -327,16 +328,14 @@ class DelugeApp:
         self.session = requests.Session()
 
         try:
-            # Première étape : authentification initiale
             response = self.session.post(
                 self.login_url, data={"password": password})
             if response.status_code != 200:
-                show_message(self.master,
-                             "Erreur", f"Échec de l'authentification initiale. Code: {response.status_code}")
+                show_message(self.master, _("Error"), _(
+                    "Initial authentication failed. Code: {}").format(response.status_code))
                 self.disconnect()
                 return
 
-        # Deuxième étape : authentification à l'API JSON-RPC
             response = self.session.post(self.login_url, json={
                 "method": "auth.login",
                 "params": [password],
@@ -345,7 +344,6 @@ class DelugeApp:
             data = response.json()
 
             if data.get('result'):
-                # Troisième étape : vérification de la session
                 response = self.session.post(self.login_url, json={
                     "method": "auth.check_session",
                     "params": [],
@@ -354,14 +352,16 @@ class DelugeApp:
                 session_data = response.json()
 
                 if session_data.get('result'):
-                    show_message(self.master, "Succès", "Connexion réussie!")
+                    show_message(self.master, _("Success"),
+                                 _("Connection successful!"))
                     self.is_connected = True
-                    self.update_button_state()
-                    # Démarrer la mise à jour périodique
+                    update_button_state(self)
                     self.update_job = self.master.after(
                         5000, lambda: update_torrents(self))
 
-                # Mise à jour des credentials si nécessaire
+                    if 'Credentials' not in self.config:
+                        self.config['Credentials'] = {}
+
                     old_config = dict(self.config['Credentials'])
                     old_password = self.get_password()
                     new_config = {
@@ -377,73 +377,68 @@ class DelugeApp:
                         if username:
                             keyring.set_password(
                                 "DelugeApp", username, password)
-                            show_message(self.master,
-                                         "Mise à jour", "Les nouveaux credentials ont été sauvegardés.")
+                            show_message(self.master, _("Update"), _(
+                                "New credentials have been saved."))
 
-                    self.connect_button.pack_forget()  # Cacher le bouton Connexion
+                    self.connect_button.pack_forget()
                     self.load_torrent_frame.pack(side=LEFT, padx=2)
                     self.add_magnet_button.pack(side=LEFT, padx=2)
-                    # unhide control_frame
                     self.control_frame.pack(side=LEFT, padx=2)
-                    # Afficher le bouton Déconnecter
                     self.disconnect_button.pack(side=LEFT, padx=5)
                     fetch_torrents(self)
                 else:
-                    show_message(self.master,
-                                 "Erreur", "Impossible de vérifier la session. Veuillez réessayer.")
+                    show_message(self.master, _("Error"), _(
+                        "Unable to verify session. Please try again."))
                     self.disconnect()
             else:
-                show_message(self.master,
-                             "Erreur", f"Échec de l'authentification à l'API JSON-RPC. Réponse: {data}")
+                show_message(self.master, _("Error"), _(
+                    "JSON-RPC API authentication failed. Response: {}").format(data))
                 self.disconnect()
         except SSLError as e:
-            show_message(self.master,
-                         "Erreur SSL", f"Erreur de certificat SSL : {str(e)}")
+            show_message(self.master, _("SSL Error"), _(
+                "SSL certificate error: {}").format(str(e)))
             self.disconnect()
             return
         except requests.RequestException as e:
-            show_message(self.master, "Erreur",
-                         f"Erreur de connexion: {str(e)}")
+            show_message(self.master, _("Error"), _(
+                "Connection error: {}").format(str(e)))
             self.disconnect()
 
     def clear_credentials(self):
         if not any(self.config['Credentials'].values()) and not self.get_password():
-            show_message(self.master, "Information",
-                         "Aucun credential à effacer.")
+            show_message(self.master, _("Information"),
+                         _("No credentials to clear."))
             return
 
-        confirm = ask_yes_no(self.master,
-                             "Confirmation", "Êtes-vous sûr de vouloir effacer tous les credentials?")
+        confirm = ask_yes_no(self.master, _("Confirmation"), _(
+            "Are you sure you want to clear all credentials?"))
         if confirm:
-            # Effacer les données du fichier de configuration
             self.config['Credentials'] = {
                 'url': '', 'port': '', 'username': ''}
             with open(config_file, 'w') as configfile:
                 self.config.write(configfile)
 
-            # Effacer le mot de passe du keyring
             old_username = self.username_var.get()
             if old_username:
                 keyring.delete_password("DelugeApp", old_username)
 
-            # Réinitialiser les variables de l'interface
             self.url_var.set('')
             self.port_var.set('')
             self.username_var.set('')
             self.password_var.set('')
             self.disconnect()
-            show_message(self.master,
-                         "Succès", "Tous les credentials ont été effacés.")
+            show_message(self.master, _("Success"), _(
+                "All credentials have been cleared."))
 
     def torrent_action(self, action):
         if not self.is_connected:
-            show_message(self.master, "Erreur", "Vous n'êtes pas connecté.")
+            show_message(self.master, _("Error"), _("You are not connected."))
             return
 
         selected_items = self.tree.selection()
         if not selected_items:
-            show_message(self.master,
-                         "Avertissement", "Veuillez sélectionner au moins un torrent.", "warning")
+            show_message(self.master, _("Warning"), _(
+                "Please select at least one torrent."), "warning")
             return
 
         torrents = [
@@ -463,14 +458,59 @@ class DelugeApp:
             handle_other_actions(self, action, torrents)
 
     def on_closing(self):
-        # Méthode à appeler lors de la fermeture de l'application
         if self.update_thread and self.update_thread.is_alive():
-            # Attendre au maximum 1 seconde
             self.update_thread.join(timeout=1.0)
         self.master.destroy()
 
+    def change_app_language(self, lang):
+
+        key_language = self.config['Settings'].get('language', 'fr')
+
+        if lang != key_language:
+
+            self.config['Settings']['language'] = lang
+            with open(config_file, 'w') as configfile:
+                self.config.write(configfile)
+
+            if ask_yes_no(self.master, _("Confirm Language Change"),
+                          _("Changing the language will restart the application. Any unsaved changes will be lost. Do you want to continue?")):
+                self.restart_application()
+        else:
+
+            show_message(self.master, _("Information"), _(
+                "The selected language is already in use."))
+            return
+
+    def restart_application(self):
+        python = sys.executable
+        os.execl(python, python, *sys.argv)
+
+    def update_ui_language(self):
+        self.master.title(_("Deluge Torrent Manager"))
+        create_menus(self)
+        configure_treeview(self)
+        update_button_texts(self)
+        update_label_texts(self)
+        if self.is_connected:
+            fetch_torrents(self)
+
+
+def load_language():
+    config = configparser.ConfigParser()
+
+    if os.path.exists(config_file):
+        config.read(config_file)
+    else:
+        config['Settings'] = {'language': 'fr'}
+        with open(config_file, 'w') as configfile:
+            config.write(configfile)
+
+    lang = config.get('Settings', 'language', fallback='fr')
+    set_language(lang)
+
 
 def main():
+    load_language()
     root = tk.Tk()
     app = DelugeApp(root)
     root.protocol("WM_DELETE_WINDOW", app.on_closing)

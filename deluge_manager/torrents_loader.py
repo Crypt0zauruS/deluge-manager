@@ -6,14 +6,15 @@ from tkinter import filedialog
 import ttkbootstrap as ttk
 from torrents_updater import fetch_torrents
 from ui_utils import center_dialog, show_message, ask_yes_no
+from localization import _
 
 
 def load_torrent(self):
     if not self.is_connected:
-        show_message(self.master, "Erreur", "Vous n'êtes pas connecté.")
+        show_message(self.master, _("Error"), _("You are not connected."))
         return
     file_paths = filedialog.askopenfilenames(
-        filetypes=[("Torrent files", "*.torrent")])
+        filetypes=[(_("Torrent files"), "*.torrent")])
     if file_paths:
         if len(file_paths) == 1:
             process_single_torrent(self, file_paths[0])
@@ -35,31 +36,31 @@ def process_single_torrent(self, file_path):
         data = response.json()
 
         if data.get('result'):
-            show_message(self.master, "Succès", f"Torrent {
-                         file_path.split('/')[-1]} ajouté avec succès.")
+            show_message(self.master, _("Success"), _(
+                "Torrent {} added successfully.").format(file_path.split('/')[-1]))
             if self.delete_torrent_var.get():
                 try:
                     os.remove(file_path)
-                    show_message(self.master, "Information", f"Le fichier torrent {
-                                 file_path} a été supprimé.")
+                    show_message(self.master, _("Information"), _(
+                        "The torrent file {} has been deleted.").format(file_path))
                 except OSError as e:
-                    show_message(self.master, "Avertissement",
-                                 f"Impossible de supprimer le fichier torrent : {e}")
+                    show_message(self.master, _("Warning"), _(
+                        "Unable to delete torrent file: {}").format(e))
         else:
             error = data.get('error', {})
             if isinstance(error, dict) and 'message' in error:
                 if "Torrent already in session" in error['message']:
-                    show_message(self.master, "Information", f"Le torrent {
-                                 file_path.split('/')[-1]} existe déjà dans la session.")
+                    show_message(self.master, _("Information"), _(
+                        "The torrent {} already exists in the session.").format(file_path.split('/')[-1]))
                 else:
-                    show_message(self.master, "Erreur", f"Échec de l'ajout du torrent. Erreur: {
-                                 error['message']}")
+                    show_message(self.master, _("Error"), _(
+                        "Failed to add torrent. Error: {}").format(error['message']))
             else:
-                show_message(self.master, "Erreur",
-                             f"Échec de l'ajout du torrent. Erreur inconnue.")
+                show_message(self.master, _("Error"), _(
+                    "Failed to add torrent. Unknown error."))
     except Exception as e:
-        show_message(self.master, "Erreur",
-                     f"Erreur lors du chargement du torrent: {str(e)}")
+        show_message(self.master, _("Error"), _(
+            "Error loading torrent: {}").format(str(e)))
 
 
 def process_multiple_torrents(self, file_paths):
@@ -93,17 +94,14 @@ def process_multiple_torrents(self, file_paths):
                         if warn_for_duplicates:
                             if not first_duplicate_encountered:
                                 first_duplicate_encountered = True
-                                continue_warnings = ask_yes_no(self.master, "Doublon détecté",
-                                                               f"Le torrent {file_path.split(
-                                                                   '/')[-1]} existe déjà.\n\n"
-                                                               "Voulez-vous continuer à être averti pour les doublons suivants ?")
+                                continue_warnings = ask_yes_no(self.master, _("Duplicate detected"),
+                                                               _("The torrent {} already exists.\n\nDo you want to continue being notified for subsequent duplicates?").format(file_path.split('/')[-1]))
                                 if not continue_warnings:
                                     warn_for_duplicates = False
                             else:
-                                add_anyway = ask_yes_no(self.master, "Doublon détecté",
-                                                        f"Le torrent {file_path.split('/')[-1]} existe déjà. Voulez-vous l'ajouter quand même ?")
+                                add_anyway = ask_yes_no(self.master, _("Duplicate detected"),
+                                                        _("The torrent {} already exists. Do you want to add it anyway?").format(file_path.split('/')[-1]))
                                 if add_anyway:
-                                    # Ici, vous pouvez ajouter le code pour forcer l'ajout du torrent si nécessaire
                                     successful_uploads += 1
                                     continue
                         already_existing += 1
@@ -113,16 +111,15 @@ def process_multiple_torrents(self, file_paths):
                     failed_uploads += 1
         except Exception as e:
             failed_uploads += 1
-            print(f"Erreur lors du chargement du torrent {
-                  file_path}: {str(e)}")
+            print(_("Error loading torrent {}: {}").format(file_path, str(e)))
 
-    message = f"{successful_uploads} torrent(s) ajouté(s) avec succès.\n"
+    message = _("{} torrent(s) added successfully.\n").format(
+        successful_uploads)
     if already_existing > 0:
-        message += f"{
-            already_existing} torrent(s) déjà existant(s) dans la session.\n"
+        message += _("{} torrent(s) already existing in the session.\n").format(already_existing)
     if failed_uploads > 0:
-        message += f"{failed_uploads} torrent(s) n'ont pas pu être ajoutés."
-    show_message(self.master, "Résumé des ajouts", message)
+        message += _("{} torrent(s) could not be added.").format(failed_uploads)
+    show_message(self.master, _("Add Summary"), message)
 
     if self.delete_torrent_var.get() and files_to_delete:
         delete_torrent_files(self, files_to_delete)
@@ -135,33 +132,31 @@ def delete_torrent_files(self, files_to_delete):
             os.remove(file_path)
             deleted_files += 1
         except OSError as e:
-            print(f"Impossible de supprimer le fichier torrent {
-                  file_path}: {e}")
+            print(_("Unable to delete torrent file {}: {}").format(file_path, e))
 
     if deleted_files > 0:
-        show_message(self.master, "Information", f"Tous les fichiers .torrent traités ({
-            deleted_files}) ont été effacés.")
+        show_message(self.master, _("Information"), _(
+            "All processed .torrent files ({}) have been deleted.").format(deleted_files))
 
 
 def add_magnet(self):
     if not self.is_connected:
-        show_message(self.master, "Erreur", "Vous n'êtes pas connecté.")
+        show_message(self.master, _("Error"), _("You are not connected."))
         return
 
     dialog = tk.Toplevel(self.master)
-    dialog.title("Ajouter un magnet")
+    dialog.title(_("Add Magnet"))
     dialog.geometry("500x200")
     dialog.minsize(500, 200)
     dialog.resizable(True, True)
 
-    # Rendre la fenêtre modale
     dialog.transient(self.master)
     dialog.grab_set()
 
     frame = ttk.Frame(dialog, padding="20 20 20 20")
     frame.pack(fill=tk.BOTH, expand=True)
 
-    ttk.Label(frame, text="Collez le lien magnet ici :", font=(
+    ttk.Label(frame, text=_("Paste the magnet link here:"), font=(
         "TkDefaultFont", 12, "bold")).pack(anchor="w", pady=(0, 10))
 
     magnet_var = tk.StringVar()
@@ -177,11 +172,11 @@ def add_magnet(self):
             if is_valid_magnet(clipboard_content):
                 magnet_var.set(clipboard_content)
             else:
-                show_message(self.master,
-                             "Erreur", "Le contenu du presse-papiers n'est pas un lien magnet valide.")
+                show_message(self.master, _("Error"), _(
+                    "The clipboard content is not a valid magnet link."))
         except tk.TclError:
-            show_message(self.master,
-                         "Erreur", "Le presse-papiers est vide ou son contenu n'est pas accessible.")
+            show_message(self.master, _("Error"), _(
+                "The clipboard is empty or its content is not accessible."))
 
     def on_submit():
         magnet_link = magnet_var.get().strip()
@@ -189,20 +184,18 @@ def add_magnet(self):
             dialog.destroy()
             process_magnet_link(self, magnet_link)
         else:
-            show_message(self.master,
-                         "Erreur", "Veuillez entrer un lien magnet valide.")
+            show_message(self.master, _("Error"), _(
+                "Please enter a valid magnet link."))
 
-    ttk.Button(button_frame, text="Coller", command=paste_clipboard,
+    ttk.Button(button_frame, text=_("Paste"), command=paste_clipboard,
                style='info.TButton').pack(side=tk.LEFT, padx=(0, 5))
-    ttk.Button(button_frame, text="Ajouter", command=on_submit,
+    ttk.Button(button_frame, text=_("Add"), command=on_submit,
                style='success.TButton').pack(side=tk.LEFT, padx=(0, 5))
-    ttk.Button(button_frame, text="Annuler", command=dialog.destroy,
+    ttk.Button(button_frame, text=_("Cancel"), command=dialog.destroy,
                style='danger.TButton').pack(side=tk.LEFT)
 
-    # Centrer la boîte de dialogue
     dialog.after(10, lambda: center_dialog(dialog, self.master))
 
-    # Attendre que la fenêtre soit fermée
     self.master.wait_window(dialog)
 
 
@@ -221,20 +214,21 @@ def process_magnet_link(self, magnet_link):
         data = response.json()
 
         if data.get('result'):
-            show_message(self.master, "Succès", "Magnet ajouté avec succès.")
+            show_message(self.master, _("Success"),
+                         _("Magnet added successfully."))
             fetch_torrents(self)
         else:
             error = data.get('error', {})
             if isinstance(error, dict) and 'message' in error:
                 if "Torrent already in session" in error['message']:
-                    show_message(self.master, "Information",
-                                 "Ce magnet existe déjà dans la session.")
+                    show_message(self.master, _("Information"), _(
+                        "This magnet already exists in the session."))
                 else:
-                    show_message(self.master, "Erreur", f"Échec de l'ajout du magnet. Erreur: {
-                                 error['message']}")
+                    show_message(self.master, _("Error"), _(
+                        "Failed to add magnet. Error: {}").format(error['message']))
             else:
-                show_message(self.master, "Erreur",
-                             "Échec de l'ajout du magnet. Erreur inconnue.")
+                show_message(self.master, _("Error"), _(
+                    "Failed to add magnet. Unknown error."))
     except Exception as e:
-        show_message(self.master,
-                     "Erreur", f"Erreur lors de l'ajout du magnet: {str(e)}")
+        show_message(self.master, _("Error"), _(
+            "Error adding magnet: {}").format(str(e)))

@@ -24,7 +24,7 @@ for requirement in requirements:
 
 # Add local modules
 local_modules = ['torrents_actions', 'torrents_loader', 
-                 'torrents_updater', 'ui_utils']
+                 'torrents_updater', 'ui_utils', 'ui_settings', 'localization', 'update']
 all_hiddenimports.extend(local_modules)
 
 # Add local data
@@ -60,7 +60,7 @@ else:
 
 # Definition of version information for the Windows executable
 version_info = {
-    'version': '0.2.0',
+    'version': '0.3.0',
     'company_name': 'Crypt0zauruS',
     'file_description': 'DelugeManager - A Deluge Torrent Client Manager',
     'internal_name': 'DelugeManager',
@@ -97,11 +97,11 @@ if sys.platform == 'darwin':
                  name='DelugeManager.app',
                  icon=icon,
                  bundle_identifier='org.deluge.manager',
-                 version='0.2.0',
+                 version='0.3.0',
                  info_plist={
                      'NSHumanReadableCopyright': 'Copyright © 2024 Crypt0zauruS. All rights reserved.',
-                     'CFBundleShortVersionString': '0.2.0',
-                     'CFBundleVersion': '0.2.0',
+                     'CFBundleShortVersionString': '0.3.0',
+                     'CFBundleVersion': '0.3.0',
                      'NSHighResolutionCapable': True,
                      'NSPrincipalClass': 'NSApplication',
                      'NSAppleScriptEnabled': False,

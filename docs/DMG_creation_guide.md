@@ -1,3 +1,101 @@
+<details>
+<style>
+summary {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+</style>
+<summary>English (Click to expand)</summary>
+
+# Creating a DMG for DelugeManager
+
+This document explains how to create a custom DMG (Disk Image) file for the DelugeManager application on macOS.
+The procedure is the same regardless of the architecture (Intel or Apple Silicon).
+
+## Prerequisites
+
+Before starting, make sure you have installed:
+
+1. **Homebrew**: A package manager for macOS. If you don't have it, install it from [https://brew.sh/](https://brew.sh/)
+
+2. **create-dmg**: A tool for creating custom DMGs
+
+   ```
+   brew install create-dmg
+   ```
+
+3. **ImageMagick**: An image manipulation tool
+   ```
+   brew install imagemagick
+   ```
+
+## Required Files
+
+Make sure you have the following files in your working directory:
+
+- `DelugeManager.app`: Your compiled application in the `/dist` directory
+- `icon.icns`: Your application's icon
+- `DM.png`: The background image for the DMG
+
+## The DMG Creation Script
+
+The `create-dmg.sh` script automates the DMG creation process. Here are its main features:
+
+1. Resizes the background image to fit the DMG window size
+2. Creates a DMG with a custom layout
+3. Configures the DMG appearance (window size, icon positions, etc.)
+4. The script assumes that the compiled DelugeManager.app is in /dist, and icon.icns, DM.png are present in the root directory.
+
+## Using the Script
+
+1. Open a terminal and navigate to the project directory.
+
+2. Make the script executable:
+
+   ```
+   chmod +x create-dmg.sh
+   ```
+
+3. Run the script:
+
+   ```
+   ./create-dmg.sh
+   ```
+
+   Wait until "DMG created successfully" appears in the terminal (you'll see the DMG interface appear on screen and change during its construction, but don't touch anything).
+
+4. Once finished, you'll find the `DelugeManager.dmg` file in the same directory.
+
+## Customization
+
+You can customize several aspects of the DMG by modifying the variables in the script:
+
+- `APP_NAME`: The name of your application
+- `WINDOW_WIDTH` and `WINDOW_HEIGHT`: The size of the DMG window
+- `TEXT_COLOR`: The color of the icon text (RGB format, values between 0.0 and 1.0)
+
+You can also adjust the position of the icons by modifying the coordinates in the `create-dmg` options.
+
+## Troubleshooting
+
+If you encounter any issues:
+
+1. Make sure all prerequisites are correctly installed.
+2. Check that all necessary files are present in the working directory.
+3. Ensure that the paths in the script are correct for your configuration.
+
+## Additional Notes
+
+- The script creates a temporary folder to process the background image. This folder is automatically deleted at the end of the process.
+- The background image is resized to completely fill the DMG window while preserving its aspect ratio.
+- You can modify the background image by replacing `DM.png` with another image of your choice.
+</details>
+
+<details>
+<Summary>Français (Cliquez pour développer)</Summary>
+
 # Création du DMG pour DelugeManager
 
 Ce document explique comment créer un fichier DMG (Disk Image) personnalisé pour l'application DelugeManager sur macOS.
@@ -86,3 +184,4 @@ Si vous rencontrez des problèmes :
 - Le script crée un dossier temporaire pour traiter l'image de fond. Ce dossier est automatiquement supprimé à la fin du processus.
 - L'image de fond est redimensionnée pour remplir complètement la fenêtre du DMG tout en préservant son ratio d'aspect.
 - Vous pouvez modifier l'image de fond en remplaçant `DM.png` par une autre image de votre choix.
+</details>

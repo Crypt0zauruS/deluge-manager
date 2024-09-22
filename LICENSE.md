@@ -1,3 +1,44 @@
+# English
+
+# Creative Commons Attribution 4.0 International License (CC BY 4.0)
+
+This work is licensed under the terms of the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
+
+## You are free to:
+
+- **Share** — copy and redistribute the material in any medium or format
+- **Adapt** — remix, transform, and build upon the material
+  for any purpose, even commercially.
+
+The licensor cannot revoke these freedoms as long as you follow the license terms.
+
+## Under the following terms:
+
+- **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+
+- **No additional restrictions** — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+
+## Notices:
+
+- You do not have to comply with the license for elements of the material in the public domain or where your use is permitted by an applicable exception or limitation.
+- No warranties are given. The license may not give you all the permissions necessary for your intended use. For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.
+
+## Attribution
+
+This work, "Deluge Torrent Manager", is an original creation by Crypt0zauruS. To use this work, you must include the following attribution:
+
+"Based on 'Deluge Torrent Manager' by Crypt0zauruS, used under CC BY 4.0. [Include a link to the original project if available]"
+
+## Disclaimer
+
+This license is legally binding. By using this work, you agree to comply with the terms of this license. Failure to comply with these terms may result in automatic revocation of your rights to use this work.
+
+For more information about this license, please refer to the full text of the license at: https://creativecommons.org/licenses/by/4.0/legalcode
+
+<hr/>
+
+# Français
+
 # Licence Creative Commons Attribution 4.0 International (CC BY 4.0)
 
 Cette œuvre est mise à disposition selon les termes de la [Licence Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/).
