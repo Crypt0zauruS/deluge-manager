@@ -1,13 +1,6 @@
 <details>
-<style>
-summary {
-  font-size: 2em;
-  font-weight: bold;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-</style>
-<summary>English (Click to expand)</summary>
+
+<summary><h2 style="display: inline-block">English (Click to expand)</h2></summary>
 
 # Creating a DMG for DelugeManager
 
@@ -94,7 +87,8 @@ If you encounter any issues:
 </details>
 
 <details>
-<Summary>Français (Cliquez pour développer)</Summary>
+
+<summary><h2 style="display: inline-block">Français (Cliquez pour développer)</h2></summary>
 
 # Création du DMG pour DelugeManager
 

@@ -6,14 +6,8 @@
 <p align="center">
   <img src="docs/Screenshot.png" alt="Scrennshot DelugeManager" width="400"/>
 </p>
-<style>
-summary {
-  font-size: 2em;
-  font-weight: bold;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-</style>
+
+<hr/>
 
 ### English
 
@@ -34,6 +28,8 @@ Deluge est un client BitTorrent multiplateforme et open-source. Il peut être ut
 Mon application est conçue pour se connecter à un serveur Deluge distant via http ou https.
 
 Voir la [documentation de Deluge](https://deluge-torrent.org/about/)
+
+<hr/>
 
 ## Sequence Diagram / Diagramme de séquence
 
@@ -96,8 +92,9 @@ participant Server as Deluge Server
     end
 ```
 
+<hr/>
 <details>
-<summary>English (Click to expand)</summary>
+<summary><h2 style="display: inline-block">English (Click to expand)</h2></summary>
 
 ## Key Features
 
@@ -407,9 +404,9 @@ sudo ./linux-install.sh
 This project is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0). See the [LICENSE.md](LICENSE.md) file for more details.
 
 </details>
-
+<hr/>
 <details>
-<summary>Français (Cliquez pour déplier)</summary>
+<summary><h2 style="display: inline-block">Français (Cliquez pour déplier)</h2></summary>
 
 ## Fonctionnalités clés
 

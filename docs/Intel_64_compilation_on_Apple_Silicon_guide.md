@@ -1,13 +1,6 @@
 <details>
-<style>
-summary {
-  font-size: 2em;
-  font-weight: bold;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-</style>
-<summary>English (Click to expand)</summary>
+
+<summary><h2 style="display: inline-block">English (Click to expand)</h2></summary>
 
 # Guide to Compiling Python Application for Intel Mac on M1, M2, or M3 Mac
 
@@ -186,7 +179,7 @@ By following these steps, you should be able to successfully compile your Python
 
 <details>
 
-<summary>Français (Cliquez pour déplier)</summary>
+<summary><h2 style="display: inline-block">Français (Cliquez pour déplier)</h2></summary>
 
 # Guide de compilation de l'application Python pour Intel Mac sur Mac M1, M2 ou M3
 
