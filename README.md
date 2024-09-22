@@ -140,10 +140,10 @@ participant Server as Deluge Server
 
 #### Linux (Ubuntu and derivatives)
 
-1. Download [this zip file](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.3.0/DelugeManager-v0.3.0-linux-ubuntu20.04-x64.zip).
-2. Extract the contents of the zip file.
+1. Download [this tar file](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.3.0/DelugeManager-v0.3.0-linux-ubuntu20.04-x64.tar).
+2. Extract the contents of the tar file.
 3. Read the Installation Guide for more information.
-4. Open a terminal and navigate to the unzipped folder.
+4. Open a terminal and navigate to the extracted folder.
 5. Make the installation script executable:
 
 ```bash
@@ -452,8 +452,8 @@ This project is licensed under the Creative Commons Attribution 4.0 Internationa
 
 #### Linux (Ubuntu et dérivés)
 
-1. Téléchargez [ce fichier zip](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.3.0/DelugeManager-v0.3.0-linux-ubuntu20.04-x64.zip).
-2. Extrayez le contenu du fichier zip.
+1. Téléchargez [ce fichier tar](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.3.0/DelugeManager-v0.3.0-linux-ubuntu20.04-x64.tar).
+2. Extrayez le contenu du fichier tar.
 3. Lisez le Guide d'Installation pour plus d'informations.
 4. Ouvrez un terminal et naviguez vers le dossier décompressé.
 5. Rendez le script d'installation exécutable :
