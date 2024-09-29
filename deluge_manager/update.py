@@ -1,13 +1,19 @@
 import requests
 import platform
 import os
+import stat
 import tkinter as tk
 from tkinter import ttk
-from ui_utils import show_message, version, author, repo_name, center_dialog
+from ui_utils import show_message, version, author, repo_name, center_dialog, ask_yes_no
 from localization import _
 import threading
 import json
 import time
+import subprocess
+import tarfile
+import signal
+import ctypes
+import gzip
 
 home_dir = os.path.expanduser("~")
 download_dir = os.path.join(home_dir, "Downloads")
@@ -66,9 +72,7 @@ def download_file(self, download_url, progress_var, cancel_download, pause_downl
 
     download_state = get_download_state(filename)
     downloaded_size = download_state['downloaded_size'] if download_state else 0
-    headers = {'Range': f'bytes={
-        downloaded_size}-'} if downloaded_size > 0 else {}
-
+    headers = {"Range": f"bytes={downloaded_size}-"} if downloaded_size > 0 else {}
     retries = 0
     while retries < MAX_RETRIES and not cancel_download.get():
         try:
@@ -215,12 +219,147 @@ def ask_download(self, title, message, download_url=None):
             ttk.Button(button_frame, text=_("Cancel"), command=on_cancel,
                        style='danger.TButton').pack(side="left", padx=10)
 
+    def install_update_windows(file_path):
+        try:
+            # Lancer le processus d'installation en arrière-plan
+            subprocess.Popen([file_path], shell=True, close_fds=True,
+                             creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
+
+            # Forcer la fermeture de l'application
+            pid = os.getpid()
+            kernel32 = ctypes.windll.kernel32
+            handle = kernel32.OpenProcess(1, 0, pid)
+            kernel32.TerminateProcess(handle, 0)
+        except Exception as e:
+            show_message(None, _("Error"), _(
+                f"Failed to start the installation"))
+        finally:
+            # Si pour une raison quelconque le processus n'est pas terminé, on force la sortie
+            os._exit(0)
+
+    def install_update_linux(file_path):
+        if not file_path.endswith('.tar.gz'):
+            show_message(None, _("Error"), _(
+                "The update file must be a .tar.gz archive."))
+            return
+
+        temp_script = os.path.join(download_dir, "launch_update.sh")
+
+        try:
+            # Vérifier si c'est un fichier gzip valide
+            with gzip.open(file_path, 'rb') as test_file:
+                test_file.read(1)
+
+            # Extraire l'archive
+            with tarfile.open(file_path, 'r:gz') as tar:
+                tar.extractall(path=download_dir)
+
+            install_script = None
+            for root, _, files in os.walk(download_dir):
+                if 'linux-install.sh' in files:
+                    install_script = os.path.join(root, 'linux-install.sh')
+                    break
+
+            install_script = None
+            for root, _, files in os.walk(download_dir):
+                if 'linux-install.sh' in files:
+                    install_script = os.path.join(root, 'linux-install.sh')
+                    break
+
+            if install_script:
+                # Ajouter le droit d'exécution tout en préservant les autres permissions
+                current_permissions = os.stat(install_script).st_mode
+                new_permissions = current_permissions | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
+                os.chmod(install_script, new_permissions)
+
+                # Préparer la commande pour lancer le script avec sudo via -A pour askpass
+                terminal_command = f"sudo -A bash '{install_script}'"
+
+                # Spécifier le programme askpass à utiliser (ici ssh-askpass)
+                os.environ["SUDO_ASKPASS"] = "/usr/bin/ssh-askpass"
+
+                # Créer un script temporaire pour lancer bash directement
+                with open(temp_script, 'w') as f:
+                    f.write("#!/bin/bash\n")
+                    f.write(f"{terminal_command}\n")
+                    # Supprimer le script temporaire après exécution
+                    f.write(f"rm -f '{temp_script}'\n")
+                os.chmod(temp_script, 0o755)
+
+                # Informer l'utilisateur et attendre confirmation
+
+                show_message(None, _("Update"), _(
+                    "The application will now close and you wiil be prompted to enter your password to install the update."))
+
+                # Lancer le script de mise à jour
+                subprocess.Popen([temp_script], start_new_session=True)
+
+                # Fermeture de l'application
+                for attempt in range(3):
+                    try:
+                        time.sleep(1)  # Attendre un peu entre chaque tentative
+                        os._exit(0)
+                    except Exception:
+                        if attempt == 2:  # Dernière tentative
+                            os.kill(os.getpid(), signal.SIGKILL)
+
+            else:
+                show_message(None, _("Error"), _(
+                    "Installation script (linux-install.sh) not found in the extracted files."))
+        except gzip.BadGzipFile:
+            show_message(None, _("Error"), _(
+                "The file is not a valid gzip archive."))
+        except tarfile.ReadError:
+            show_message(None, _("Error"), _(
+                "The file is not a valid tar archive."))
+        except Exception as e:
+            show_message(None, _("Error"), f"An unexpected error occurred")
+        finally:
+            # Assurer la suppression du script temporaire en cas d'erreur
+            if os.path.exists(temp_script):
+                os.remove(temp_script)
+
+    def install_update_mac(file_path):
+        try:
+            # Show message before opening the DMG
+            show_message(self.master, _("Update"), _(
+                "The update package will now open. The application will close after you click OK."))
+
+            # Open the DMG file
+            subprocess.Popen(['open', file_path])
+
+            # Schedule the application to close
+            self.master.after(500, lambda: os._exit(0))
+        except Exception as e:
+            show_message(self.master, _("Error"), _(
+                f"An error occurred while opening the update package"))
+            # Even if there's an error, attempt to close the application
+            self.master.after(500, lambda: os._exit(1))
+
+    def install_update(file_path):
+        system = platform.system().lower()
+        if system == 'windows':
+            install_update_windows(file_path)
+        elif system == 'linux':
+            install_update_linux(file_path)
+        elif system == 'darwin':
+            install_update_mac(file_path)
+        else:
+            show_message(None, _("Error"), _(
+                "Unsupported operating system for automatic installation."))
+
     def download_and_update_ui(*args):
+        self, download_url, progress_var, cancel_download, pause_download, dialog = args
         result = download_file(*args)
         if result == "completed":
+            file_path = os.path.join(download_dir, download_url.split("/")[-1])
             show_message(self.master, _("Success"),
-                         _(f'File downloaded successfully to {os.path.join(download_dir, filename)}'))
+                         _(f'File downloaded successfully to {file_path}'))
             dialog.destroy()
+
+            if ask_yes_no(self.master, _("Install Update"), _("Do you want to install the update now?")):
+                install_update(file_path)
+
         elif result == "cancelled":
             show_message(self.master, _("Download Cancelled"),
                          _("The download has been cancelled and temporary files removed."))
@@ -255,9 +394,7 @@ def ask_download(self, title, message, download_url=None):
 
 def check_for_update(self):
     # GitHub API to get the latest release information
-    api_url = f"https://api.github.com/repos/{
-        author}/{repo_name}/releases/latest"
-
+    api_url = f"https://api.github.com/repos/{author}/{repo_name}/releases/latest"
     try:
         response = requests.get(api_url)
         if response.status_code == 200:
@@ -286,19 +423,18 @@ def check_for_update(self):
                     download_url = None
 
                 if download_url:
-
                     message = _(f'New version {
                                 latest_version} is available! Download now ?')
                     ask_download(self, _("Update"), message, download_url)
                 else:
-                    show_message(self.master, _("Update"), _(
-                        "New version is available, but no download is found for your platform."))
+                    show_message(self.master, _("Update"),
+                                 _("New version is available, but no download is found for your platform."))
             else:
                 show_message(self.master, _("No Update Available"),
                              _("You are using the latest version."))
         else:
-            show_message(self.master, _("Update Check Failed"), _(
-                f'Failed to fetch the latest release info: {response.status_code}'))
+            show_message(self.master, _("Update Check Failed"),
+                         _(f'Failed to fetch the latest release info: {response.status_code}'))
     except Exception as e:
-        show_message(self.master, _("Error"), _(
-            f'An error occurred while checking for updates: {str(e)}'))
+        show_message(self.master, _("Error"),
+                     _(f'An error occurred while checking for updates'))

@@ -99,8 +99,10 @@ translations = {
         'Window dimensions:': 'Dimensions au démarrage :',
         'Apply': 'Appliquer',
         'Confirm Language Change': 'Confirmer le changement de langue',
-        'Changing the language will restart the application. Any unsaved changes will be lost. Do you want to continue?': 'Le changement de langue va redémarrer l\'application. Toute modification non sauvegardée sera perdue. Voulez-vous continuer ?',
+        'Changing the language will close the application. You will need to restart it to apply the changes. Do you want to continue?': 'Changer la langue fermera l\'application. Vous devrez la redémarrer pour appliquer les changements. Voulez-vous continuer ?',
+        'Changing the language will restart the application. Do you want to continue?' : 'Changer la langue redémarrera l\'application. Voulez-vous continuer ?',
         'The selected language is already in use.': 'La langue sélectionnée est déjà utilisée.',
+        'An error occurred while changing the language.': 'Une erreur est survenue lors du changement de langue.',
         'Minimum dimensions are 1200x800. Please enter valid values.': 'Les dimensions minimales sont 1200x800. Veuillez entrer des valeurs valides.',
         'Please enter valid numbers for width and height.': 'Veuillez entrer des nombres valides pour la largeur et la hauteur.',
 
@@ -119,7 +121,6 @@ translations = {
         'Paused': 'En pause',
         'Checking': 'Vérification',
         'Queued': 'En file d\'attente',
-        'Error': 'Erreur',
 
         # Divers
         'OK': 'OK',
@@ -175,6 +176,19 @@ translations = {
         'Download paused. Click Resume to continue.': 'Téléchargement en pause. Cliquez sur Reprendre pour continuer.',
         'Download failed. Click Resume to try again.': 'Échec du téléchargement. Cliquez sur Reprendre pour réessayer.',
         'Start Download': 'Démarrer le téléchargement',
+        'Failed to start the installation': 'Échec du démarrage de l\'installation',
+        'The update file must be a .tar.gz archive.': 'Le fichier de mise à jour doit être une archive .tar.gz.',
+        'Installation script (linux-install.sh) not found in the extracted files.': 'Le script d\'installation (linux-install.sh) n\'a pas été trouvé dans les fichiers extraits.',
+        'The file is not a valid gzip archive.': 'Le fichier n\'est pas une archive gzip valide.',
+        'An unexpected error occurred.': 'Une erreur inattendue est survenue.',
+        'The update package will now open. The application will close after you click OK.': 'Le paquet de mise à jour va maintenant s\'ouvrir. L\'application se fermera après que vous ayez cliqué sur OK.',
+        'An error occurred while opening the update package.': 'Une erreur est survenue lors de l\'ouverture du paquet de mise à jour.',
+        'Unsupported operating system for automatic installation.': 'Système d\'exploitation non pris en charge pour l\'installation automatique.',
+        'File downloaded successfully to {}': 'Fichier téléchargé avec succès dans {}',
+        'Install Update': 'Installer la mise à jour',
+        'Do you want to install the update now?': 'Voulez-vous installer la mise à jour maintenant ?',
+        'The download has failed. You can try to resume it later.': 'Le téléchargement a échoué. Vous pouvez essayer de le reprendre plus tard.',
+        'The application will now close and you wiil be prompted to enter your password to install the update.': 'L\'application va maintenant se fermer et vous serez invité à entrer votre mot de passe pour installer la mise à jour.',
 
         # licence
         'This project is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).\n\n':
@@ -291,7 +305,10 @@ translations = {
         'Window dimensions:': 'Dimensions at startup:',
         'Apply': 'Apply',
         'Confirm Language Change': 'Confirm Language Change',
-        'Changing the language will restart the application. Any unsaved changes will be lost. Do you want to continue?': 'Changing the language will restart the application. Any unsaved changes will be lost. Do you want to continue?',
+        'Changing the language will close the application. You will need to restart it to apply the changes. Do you want to continue?': 'Changing the language will close the application. You will need to restart it to apply the changes. Do you want to continue?',
+        'Changing the language will restart the application. Do you want to continue?' : 'Changing the language will restart the application. Do you want to continue?',
+        'The selected language is already in use.': 'The selected language is already in use.',
+        'An error occurred while changing the language.': 'An error occurred while changing the language.',        
         'Minimum dimensions are 1200x800. Please enter valid values.': 'Minimum dimensions are 1200x800. Please enter valid values.',
         'Please enter valid numbers for width and height.': 'Please enter valid numbers for width and height.',
 
@@ -310,7 +327,6 @@ translations = {
         'Paused': 'Paused',
         'Checking': 'Checking',
         'Queued': 'Queued',
-        'Error': 'Error',
 
         # Miscellaneous
         'OK': 'OK',
@@ -337,15 +353,9 @@ translations = {
         '{} torrent(s) have been successfully removed': '{} torrent(s) have been successfully removed',
         'The action \'{}\' has been performed on the torrent \'{}\'': 'The action \'{}\' has been performed on the torrent \'{}\'',
         'The action \'{}\' has been performed on {} torrents': 'The action \'{}\' has been performed on {} torrents',
-        'Edit Tracker': 'Éditer le Tracker',
-        'Enter new tracker address:': 'Entrez la nouvelle adresse du tracker :',
-        'Update': 'Mettre à jour',
-        'Tracker updated successfully.': 'Tracker mis à jour avec succès.',
-        'Failed to update tracker.': 'Échec de la mise à jour du tracker.',
-        'Please enter a valid tracker address.': 'Veuillez entrer une adresse de tracker valide.',
         'Edit Tracker': 'Edit Tracker',
         'Enter new tracker address:': 'Enter new tracker address:',
-        'Update': 'Mettre à jour',
+        'Update': 'Update',
         'Tracker updated successfully.': 'Tracker updated successfully.',
         'Failed to update tracker.': 'Failed to update tracker.',
         'Please enter a valid tracker address.': 'Please enter a valid tracker address.',
@@ -372,6 +382,20 @@ translations = {
         'Download paused. Click Resume to continue.': 'Download paused. Click Resume to continue.',
         'Download failed. Click Resume to try again.': 'Download failed. Click Resume to try again.',
         'Start Download': 'Start Download',
+        'Failed to start the installation': 'Failed to start the installation',
+        'The update file must be a .tar.gz archive.': 'The update file must be a .tar.gz archive.',
+        'Installation script (linux-install.sh) not found in the extracted files.': 'Installation script (linux-install.sh) not found in the extracted files.',
+        'The file is not a valid gzip archive.': 'The file is not a valid gzip archive.',
+        'An unexpected error occurred.': 'An unexpected error occurred.',
+        'The update package will now open. The application will close after you click OK.': 'The update package will now open. The application will close after you click OK.',
+        'An error occurred while opening the update package.': 'An error occurred while opening the update package.',
+        'Unsupported operating system for automatic installation.': 'Unsupported operating system for automatic installation.',
+        'File downloaded successfully to {}': 'File downloaded successfully to {}',
+        'Install Update': 'Install Update',
+        'Do you want to install the update now?': 'Do you want to install the update now?',
+        'The download has failed. You can try to resume it later.': 'The download has failed. You can try to resume it later.',
+        'The application will now close and you wiil be prompted to enter your password to install the update.': 'The application will now close and you wiil be prompted to enter your password to install the update.',
+
 
         # license
         'This project is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).\n\n':

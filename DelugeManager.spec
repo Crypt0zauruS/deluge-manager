@@ -108,4 +108,3 @@ if sys.platform == 'darwin':
                      'CFBundleName': 'DelugeManager',
                      'CFBundleDisplayName': 'DelugeManager',
                  })
-

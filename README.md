@@ -31,7 +31,8 @@ Voir la [documentation de Deluge](https://deluge-torrent.org/about/)
 
 <hr/>
 
-## Sequence Diagram / Diagramme de séquence
+<details>
+<summary><h2 style="display: inline-block">Sequence Diagram / Diagramme de séquence</h2></summary>
 
 ```mermaid
 sequenceDiagram
@@ -83,6 +84,15 @@ participant Server as Deluge Server
         Client-->>UI: Updates interface
         UI-->>User: Displays new torrent
 
+        User->>UI: Clicks "Send Magnet"
+        UI->>User: Opens magnet link dialog
+        User->>UI: Enters magnet link
+        UI->>Client: add_magnet()
+        Client->>Server: Sends magnet link
+        Server-->>Client: Add confirmation
+        Client-->>UI: Updates interface
+        UI-->>User: Displays new torrent
+
         User->>UI: Clicks "Disconnect"
         UI->>Client: disconnect()
         Client->>UI: Resets interface
@@ -92,7 +102,10 @@ participant Server as Deluge Server
     end
 ```
 
+</details>
+
 <hr/>
+
 <details>
 <summary><h2 style="display: inline-block">English (Click to expand)</h2></summary>
 

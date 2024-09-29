@@ -1,5 +1,6 @@
 # The DelugeApp class in the provided Python code is a GUI application for managing torrents using the
 # Deluge torrent client API.
+import time
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
@@ -10,6 +11,9 @@ import configparser
 import os
 import keyring
 import sys
+import subprocess
+import platform
+import shutil
 from PIL import Image, ImageTk
 from torrents_actions import show_torrent_context_menu, handle_remove_action, handle_pause_resume_action, handle_other_actions, edit_tracker
 from torrents_loader import load_torrent, add_magnet
@@ -21,6 +25,15 @@ from localization import _, set_language
 
 home_dir = os.path.expanduser("~")
 config_file = os.path.join(home_dir, 'deluge_app_config.ini')
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(os.path.dirname(__file__))
+    return os.path.join(base_path, relative_path)
 
 
 class DelugeApp:
@@ -116,18 +129,7 @@ class DelugeApp:
         right_frame = ttk.Frame(cred_frame)
         right_frame.pack(side=RIGHT, fill=Y)
 
-        # Chargement et redimensionnement de l'image
-        banner_path = os.path.join(sys._MEIPASS, 'banner.png') if hasattr(
-            sys, '_MEIPASS') else os.path.join(os.path.dirname(__file__), 'banner.png')
-        banner_image = Image.open(banner_path)
-
-        banner_image = banner_image.resize((400, 170), Image.LANCZOS)
-        banner_photo = ImageTk.PhotoImage(banner_image)
-
-        # Création du label pour l'image et centrage
-        banner_label = ttk.Label(right_frame, image=banner_photo)
-        banner_label.image = banner_photo  # Garder une référence
-        banner_label.pack(expand=True, anchor='center')
+        self.load_banner(right_frame)
 
         # Configuration du style pour les boutons
         configure_button_style(self, style)
@@ -206,6 +208,25 @@ class DelugeApp:
 
         self.update_thread = None
         self.update_job = None
+
+        self.cleanup_temp_directories()
+
+    def load_banner(self, frame):
+        try:
+            banner_path = resource_path('banner.png')
+            banner_image = Image.open(banner_path)
+            banner_image = banner_image.resize((400, 170), Image.LANCZOS)
+            banner_photo = ImageTk.PhotoImage(banner_image)
+
+            # Création du label pour l'image et centrage
+            banner_label = ttk.Label(frame, image=banner_photo)
+            banner_label.image = banner_photo  # Garder une référence
+            banner_label.pack(expand=True, anchor='center')
+        except Exception as e:
+            print(f"Error loading banner: {e}")
+            # Créez un label de texte à la place si l'image ne peut pas être chargée
+            banner_label = ttk.Label(frame, text="Deluge Torrent Manager")
+            banner_label.pack(expand=True, anchor='center')
 
     def open_settings(self):
         if open_settings_dialog(self.master, self.config, self.config_file):
@@ -462,28 +483,154 @@ class DelugeApp:
             self.update_thread.join(timeout=1.0)
         self.master.destroy()
 
+    def cleanup_temp_directories(self):
+        if getattr(sys, 'frozen', False):
+            try:
+                # Obtenir le chemin du répertoire temporaire actuel
+                current_temp_dir = sys._MEIPASS if hasattr(sys, '_MEIPASS') else os.path.dirname(sys.executable)
+                parent_dir = os.path.dirname(current_temp_dir)
+
+                print(f"Current temp directory: {current_temp_dir}")
+                print(f"Parent directory: {parent_dir}")
+
+                for item in os.listdir(parent_dir):
+                    item_path = os.path.join(parent_dir, item)
+                    if item.startswith("_MEI") and os.path.isdir(item_path) and item_path != current_temp_dir:
+                        try:
+                            shutil.rmtree(item_path, ignore_errors=True)
+                            print(f"Cleaned up directory: {item_path}")
+                        except Exception as e:
+                            print(f"Error cleaning up {item_path}: {e}")
+
+            except Exception as e:
+                print(f"Error during cleanup: {e}")
+
     def change_app_language(self, lang):
+        try:
+            key_language = self.config['Settings'].get('language', 'fr')
 
-        key_language = self.config['Settings'].get('language', 'fr')
+            if lang != key_language:
+                self.config['Settings']['language'] = lang
+                config_path = os.path.abspath(self.config_file)
+                with open(self.config_file, 'w') as configfile:
+                    self.config.write(configfile)
 
-        if lang != key_language:
+                message = _(
+                    "Changing the language will restart the application. Do you want to continue?")
 
-            self.config['Settings']['language'] = lang
-            with open(config_file, 'w') as configfile:
-                self.config.write(configfile)
+                if ask_yes_no(self.master, _("Confirm Language Change"), message):
+                    self.restart_application()
+            else:
+                show_message(self.master, _("Information"), _(
+                    "The selected language is already in use."))
+        except Exception as e:
+            show_message(self.master, _("Error"), _(
+                "An error occurred while changing the language."))
 
-            if ask_yes_no(self.master, _("Confirm Language Change"),
-                          _("Changing the language will restart the application. Any unsaved changes will be lost. Do you want to continue?")):
-                self.restart_application()
-        else:
-
-            show_message(self.master, _("Information"), _(
-                "The selected language is already in use."))
-            return
-
+    
     def restart_application(self):
-        python = sys.executable
-        os.execl(python, python, *sys.argv)
+        try:
+            if getattr(sys, 'frozen', False):
+                
+                exe_path = sys.executable
+                
+                if platform.system() == 'Windows':
+                    temp_dir = sys._MEIPASS if hasattr(sys, '_MEIPASS') else os.path.dirname(exe_path)
+                
+                    parent_dir = os.path.dirname(temp_dir)
+                
+                    temp_copy_dir = os.path.join(parent_dir, f'_MEI_copy_{os.getpid()}')
+                    
+                    if os.path.commonpath([temp_dir, temp_copy_dir]) != parent_dir:
+                        raise Exception("The copy operation is not happening within the same parent directory.")
+                    
+                    shutil.copytree(temp_dir, temp_copy_dir)
+                    current_pid = os.getpid()
+                    temp_file_path = os.path.join(parent_dir, f'restart{current_pid}.bat')
+                    delete_file_path = os.path.join(parent_dir, f'delete{current_pid}.bat')
+
+                    with open(temp_file_path, 'w') as temp_file:
+                        temp_file.write('@echo off\n')
+                        temp_file.write(f'set ORIGINAL_PID={current_pid}\n')
+                        temp_file.write(f'set RESTART_PID=%RANDOM%%RANDOM%\n')
+                        temp_file.write('echo %RESTART_PID% > "%TEMP%\\restart_pid.txt"\n')
+                        temp_file.write(f'echo Waiting for PID %ORIGINAL_PID% to exit...\n')
+                        temp_file.write(':wait_loop\n')
+                        temp_file.write(f'tasklist /FI "PID eq %ORIGINAL_PID%" 2>NUL | find /I /N "%ORIGINAL_PID%">NUL\n')
+                        temp_file.write('if "%ERRORLEVEL%"=="0" (\n')
+                        temp_file.write('    ping 127.0.0.1 -n 2 > nul\n')
+                        temp_file.write('    goto wait_loop\n')
+                        temp_file.write(')\n')
+                        temp_file.write(f'echo Process %ORIGINAL_PID% has exited.\n')
+                        temp_file.write(f'ren "{temp_copy_dir}" "{os.path.basename(temp_dir)}"\n')
+                        temp_file.write(f'cd /d "{os.path.dirname(exe_path)}"\n')
+                        temp_file.write(f'start "" "{exe_path}"\n')
+                        temp_file.write(':check_new_process\n')
+                        temp_file.write(f'tasklist /FI "IMAGENAME eq {os.path.basename(exe_path)}" 2>NUL | find /I /N "{os.path.basename(exe_path)}">NUL\n')
+                        temp_file.write('if "%ERRORLEVEL%"=="1" (\n')
+                        temp_file.write('    ping 127.0.0.1 -n 2 > nul\n')
+                        temp_file.write('    goto check_new_process\n')
+                        temp_file.write(')\n')
+                        temp_file.write(f'start "" /b cmd /c "{delete_file_path}"\n')
+                        temp_file.write('exit\n')
+
+                    with open(delete_file_path, 'w') as delete_file:
+                        delete_file.write('@echo off\n')
+                        delete_file.write('setlocal enabledelayedexpansion\n')
+                        delete_file.write('set /p RESTART_PID=<"%TEMP%\\restart_pid.txt"\n')
+                        delete_file.write('del "%TEMP%\\restart_pid.txt"\n')
+                        delete_file.write(':check_restart\n')
+                        delete_file.write('for /f "tokens=2" %%a in (\'tasklist /fi "PID eq %RESTART_PID%" /fo list ^| find "PID:"\') do set FOUND_PID=%%a\n')
+                        delete_file.write('if "!FOUND_PID!"=="%RESTART_PID%" (\n')
+                        delete_file.write('    taskkill /F /PID %RESTART_PID%\n')
+                        delete_file.write('    ping 127.0.0.1 -n 2 > nul\n')
+                        delete_file.write('    goto check_restart\n')
+                        delete_file.write(')\n')
+                        delete_file.write(f'for /d %%i in ("{parent_dir}\\_MEI_copy_*") do (\n')
+                        delete_file.write('    rd /s /q "%%i"\n')
+                        delete_file.write(')\n')
+                        delete_file.write(f'del "{temp_file_path}"\n')
+                        delete_file.write('(goto) 2>nul & del "%~f0"\n')
+
+                    subprocess.Popen(['cmd', '/c', 'start', '/b', temp_file_path], shell=True, creationflags=subprocess.CREATE_NEW_CONSOLE)
+                    time.sleep(1)
+
+                elif platform.system() == 'Linux':
+                    temp_dir = sys._MEIPASS if hasattr(sys, '_MEIPASS') else os.path.dirname(exe_path)
+                    parent_dir = os.path.dirname(temp_dir)
+                    temp_copy_dir = os.path.join(parent_dir, f'_MEI_copy_{os.getpid()}')
+                    
+                    if os.path.commonpath([temp_dir, temp_copy_dir]) != parent_dir:
+                        raise Exception("The copy operation is not happening within the same parent directory.")
+                    
+                    shutil.copytree(temp_dir, temp_copy_dir)
+                    
+                    restart_script_path = os.path.join(parent_dir, f'restart_{os.getpid()}.sh')
+                    with open(restart_script_path, 'w') as restart_script:
+                        restart_script.write(f"""#!/bin/bash
+    while ps -p {os.getpid()} > /dev/null; do sleep 1; done
+    mv "{temp_copy_dir}" "{temp_dir}"
+    "{exe_path}" &
+    rm -f "{restart_script_path}"
+    """)
+                    
+                    os.chmod(restart_script_path, 0o755)
+                    subprocess.Popen(['/bin/bash', restart_script_path])
+                else:
+                    
+                    subprocess.Popen([exe_path], cwd=os.path.dirname(exe_path))
+            else:
+                python = sys.executable
+                script_path = os.path.abspath(sys.argv[0])
+                subprocess.Popen([python, script_path], cwd=os.path.dirname(script_path))
+            
+            print("Closing the current application...")
+            self.master.after(100, self.master.destroy)
+        except Exception as e:
+            print(f"Error during application restart: {e}")
+        finally:
+            sys.exit()
+
 
     def update_ui_language(self):
         self.master.title(_("Deluge Torrent Manager"))
