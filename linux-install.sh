@@ -95,7 +95,7 @@ uninstall() {
 
     display_message "Désinstallation terminée." "Uninstallation complete."
 
-    if [ "$0" == "$INSTALLED_SCRIPT" ]; then
+    if [ "$0" == "$INSTALLED_SCRIPT" ] && [ "$1" != "update_or_repair" ]; then
         TEMP_SCRIPT=$(mktemp)
         cat << EOF > "$TEMP_SCRIPT"
 #!/bin/bash
@@ -106,13 +106,12 @@ EOF
         chmod +x "$TEMP_SCRIPT"
         display_message "Nettoyage final en cours..." "Final cleanup in progress..."
         "$TEMP_SCRIPT"
+        exit 0
     else
         rm -f "$INSTALLED_SCRIPT"
         rm -rf "$SCRIPT_INSTALL_DIR"
         display_message "Script d'installation système supprimé." "Installation script removed."
     fi
-
-    exit 0
 }
 
 # Fonction pour installer ou mettre à jour
@@ -171,7 +170,7 @@ if [ -f "$VERSION_FILE" ]; then
         case "$choice" in
             y|Y )
                 display_message "Réparation de l'installation..." "Repairing installation..."
-                uninstall
+                uninstall "update_or_repair"
                 install_or_update
                 ;;
             * )
@@ -186,7 +185,7 @@ if [ -f "$VERSION_FILE" ]; then
         case "$choice" in
             y|Y )
                 display_message "Mise à jour en cours..." "Updating..."
-                uninstall
+                uninstall "update_or_repair"
                 install_or_update
                 ;;
             * )
