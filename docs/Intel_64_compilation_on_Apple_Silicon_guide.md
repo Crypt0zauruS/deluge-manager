@@ -128,7 +128,7 @@ pip install ttkbootstrap
 2. Verify that everything is correctly installed:
 
 ```bash
-python -c "import tkinter, requests, keyring, ttkbootstrap, PyInstaller; print('Everything is installed correctly!')"
+python -c "import tkinter, requests, keyring, ttkbootstrap, PIL, PyInstaller; print('Everything is installed correctly!')"
 ```
 
 ## Compiling the Application
@@ -307,7 +307,7 @@ pip install ttkbootstrap
 2. Vérifiez que tout est correctement installé :
 
 ```bash
-python -c "import tkinter, requests, keyring, ttkbootstrap, PyInstaller; print('Tout est installé correctement!')"
+python -c "import tkinter, requests, keyring, ttkbootstrap, PIL, PyInstaller; print('Tout est installé correctement!')"
 ```
 
 ## Compilation de l'application

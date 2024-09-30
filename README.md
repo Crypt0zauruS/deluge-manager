@@ -153,7 +153,7 @@ participant Server as Deluge Server
 
 #### Linux (Ubuntu and derivatives)
 
-1. Download [this tar file](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.3.0/DelugeManager-v0.3.0-linux-ubuntu20.04-x64.tar).
+1. Download [this tar file](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.3.0/DelugeManager-v0.3.0-linux-ubuntu22.04-x64.tar.gz).
 2. Extract the contents of the tar file.
 3. Read the Installation Guide for more information.
 4. Open a terminal and navigate to the extracted folder.
@@ -379,8 +379,22 @@ deactivate
 
 2. If you want to remove the virtual environment to clean up your project, you can do so by running:
 
+- for MacOS and Linux :
+
 ```bash
 rm -rf venv
+```
+
+- for Windows (command prompt) :
+
+```bash
+rmdir /s venv
+```
+
+- for Windows (powershell) :
+
+```bash
+Remove-Item -Recurse -Force venv
 ```
 
 3. On MacOS, you can generate a custom DMG for the application using the `create-dmg.sh` script. See the [DMG_creation_guide.md](docs/DMG_creation_guide.md) file for more details.
@@ -465,7 +479,7 @@ This project is licensed under the Creative Commons Attribution 4.0 Internationa
 
 #### Linux (Ubuntu et dérivés)
 
-1. Téléchargez [ce fichier tar](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.3.0/DelugeManager-v0.3.0-linux-ubuntu20.04-x64.tar).
+1. Téléchargez [ce fichier tar](https://github.com/Crypt0zauruS/deluge-manager/releases/download/v0.3.0/DelugeManager-v0.3.0-linux-ubuntu22.04-x64.tar.gz).
 2. Extrayez le contenu du fichier tar.
 3. Lisez le Guide d'Installation pour plus d'informations.
 4. Ouvrez un terminal et naviguez vers le dossier décompressé.
@@ -691,8 +705,22 @@ deactivate
 
 2. Si vous souhaitez supprimer l'environnement virtuel pour nettoyer votre projet, vous pouvez le faire en exécutant :
 
+- pour MacOS et Linux :
+
 ```bash
 rm -rf venv
+```
+
+- pour Windows (command prompt) :
+
+```bash
+rmdir /s venv
+```
+
+- pour Windows (powershell) :
+
+```bash
+Remove-Item -Recurse -Force venv
 ```
 
 3. Sous MacOS, vous pouvez générer un DMG personnalisé pour l'application en utilisant le script `create-dmg.sh`. Voir le fichier [DMG_creation_guide.md](docs/DMG_creation_guide.md) pour plus de détails.
